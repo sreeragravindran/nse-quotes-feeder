@@ -1,0 +1,21 @@
+{
+  "name": "stock-quotes-automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "alphavantage": "^1.1.1",
+    "cheerio": "^1.0.0-rc.2",
+    "google-finance": "^0.1.11",
+    "moment-timezone": "^0.5.16",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "stock-watch": "^0.2.0",
+    "time": "^0.12.0"
+  }
+}
