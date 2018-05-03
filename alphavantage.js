@@ -30,19 +30,20 @@ StockExchange.prototype.getCurrentPrices = function(callback){
                 if(timeSeries.hasOwnProperty(key)){
                     currentPrice = {
                         stockSymbol : stockSymbol,
-                        timestamp : new Date(),                     
+                        timestamp : key,                     
                         open : timeSeries[key]['1. open'],
                         high : timeSeries[key]['2. high'],
                         low : timeSeries[key]['3. low'],
                         close: timeSeries[key]['4. close'],
                         volume: timeSeries[key]['5. volume']
-                    }; 
+                    };                     
                     this.successCount++;                     
+                    
                     // break after reading the first element (for latest value) in the time series 
                     break;                       
                 }
             }
-            return callback(currentPrice, null);                 
+            return callback(currentPrice);                 
         })        
         .catch((error) => {
             this.totalCount++; 
@@ -65,7 +66,7 @@ stockExchange.getCurrentPrices(function(data, error){
     }
 });
 
-console.log("END !!");
+//console.log("END !!");
 
 // setInterval(() => { 
 //     successCount = 0; 
