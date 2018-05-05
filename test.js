@@ -25,3 +25,30 @@ wait(1000)
     })    
 })
 .then(() => console.log("world"));
+
+
+// // this in method when invoked from closure 
+// function Person(name){
+//     this.name = name;
+// }
+
+// Person.prototype.getName = function(){
+//     console.log(this);
+//     return this.name; 
+// }
+
+// Person.prototype.getData = function(){
+//     //var getName = this.getName;    
+//     var that = this;
+
+//     getNameClosure = function(){
+//         console.log(that.getName());
+//     };
+
+//     getNameClosure();
+// }
+
+// var p = new Person('mike');
+// //p.getName()
+// // console.log();
+// p.getData();

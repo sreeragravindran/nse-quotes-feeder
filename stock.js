@@ -52,35 +52,34 @@ StockExchange.prototype.getIntraday1MSeriesFor = function(stock, callback){
 
 }
 
+// encapsulates the logic to regulate the calls to api for multiple stocks 
+// ensures a request is fired once every nth second 
 StockExchange.prototype.getIntraday1MSeriesForAllStocks = function(callback){   
 
     var stocks = this.getAllStocks();
     var index = 0;
-    var getIntraday1MSeriesFor = this.getIntraday1MSeriesFor;
+    // hold a reference to the stock exchange object to be used inside the closure instead of 'this'    
+    var stockExchange = this;
 
     (function getData(){     
         setTimeout(() => {
             if (index < stocks.length){                
-                getIntraday1MSeriesFor(stocks[index], callback)                
+                stockExchange.getIntraday1MSeriesFor(stocks[index], callback)                
                 index++;              
                 getData(); 
             }
-        }, 1000);         
+        }, 3000);         
     })();    
 }
 
 
 var stockEx = new StockExchange();
-console.log(stockEx.data);
 
-
-//stockEx.getIntraday1MSeries(null, null); 
 stockEx.getIntraday1MSeriesForAllStocks(function(error, data){
     if(error){
         console.log(error.stock.symbol, error.errorMessage);
     }
     else{
-        console.log(data.symbol, data.priceVolumeSeries.length);
+        console.log(data.symbol, data.priceVolumeSeries[0].close);
     }
 });
-
