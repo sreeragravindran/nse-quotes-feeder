@@ -52,3 +52,7 @@ wait(1000)
 // //p.getName()
 // // console.log();
 // p.getData();
+
+var alpha = require('../src/domain/alpha-vantage');
+
+alpha();

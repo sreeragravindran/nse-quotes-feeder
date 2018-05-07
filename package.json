@@ -15,6 +15,7 @@
     "moment-timezone": "^0.5.16",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
+    "restify": "^7.1.1",
     "stock-watch": "^0.2.0",
     "time": "^0.12.0"
   }

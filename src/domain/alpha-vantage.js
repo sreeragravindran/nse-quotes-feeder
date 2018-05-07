@@ -1,17 +1,4 @@
-function PriceVolumeData(timestamp, open, high, low, close, volume){
-    this.timestamp = timestamp;
-  
-    this.open = open;
-    this.high = high;
-    this.low = low;
-    this.close = close;
-    this.volume = volume;
-}
-
-function Stock(symbol){
-    this.symbol = symbol; 
-    this.priceVolumeSeries = []; 
-}
+var models = require('./models');
 
 class AlphaVantage {
     constructor(apiKey) {
@@ -22,9 +9,9 @@ class AlphaVantage {
     getAllStocks() {
         var stocks = [];
         var fs = require('fs');
-        var symbols = fs.readFileSync('equities.txt').toString().split("\n");
+        var symbols = fs.readFileSync('data/equities.txt').toString().split("\n");
         symbols.forEach(s => {
-            stocks.push(new Stock(s));
+            stocks.push(new models.Stock(s));
         });
         return stocks;
     }
@@ -40,7 +27,7 @@ class AlphaVantage {
                 var timeSeries = data['Time Series (1min)'];
                 for (var key in timeSeries) {
                     if (timeSeries.hasOwnProperty(key)) {
-                        stock.priceVolumeSeries.push(new PriceVolumeData(
+                        stock.priceVolumeSeries.push(new models.PriceVolumeData(
                             key, 
                             timeSeries[key]['1. open'], 
                             timeSeries[key]['2. high'], 
@@ -98,30 +85,4 @@ class AlphaVantage {
 }
 
 
-var aV1 = new AlphaVantage('3FUAI09JYAO19WCX');
-var aV2 = new AlphaVantage('D11MRXG1OJVDIBYU')
-
-var allStocks = aV1.getAllStocks(); 
-
-
-var first100 = allStocks.slice(0, 100);
-var second100 = allStocks.slice(100, 200);
-
-
-aV1.getIntraday1mSeriesForStocks(first100, function(error, data){
-    if(error){
-        console.log(error.stock.symbol, error.errorMessage);
-    }
-    else{
-        console.log(data.symbol, data.priceVolumeSeries[0].close);
-    }
-});
-
-// aV2.getIntraday1mSeriesForStocks(second100, function(error, data){
-//     if(error){
-//         console.log(error.stock.symbol, error.errorMessage);
-//     }
-//     else{
-//         console.log(data.symbol, data.priceVolumeSeries[0].close);
-//     }
-// });
+module.exports = AlphaVantage;
