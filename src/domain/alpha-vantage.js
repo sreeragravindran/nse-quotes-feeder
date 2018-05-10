@@ -9,7 +9,7 @@ class AlphaVantage {
     getAllStocks() {
         var stocks = [];
         var fs = require('fs');
-        var symbols = fs.readFileSync('data/equities.txt').toString().split("\n");
+        var symbols = fs.readFileSync('data/equities.picks.txt').toString().split("\n");
         symbols.forEach(s => {
             stocks.push(new models.Stock(s));
         });
@@ -54,7 +54,7 @@ class AlphaVantage {
         (function getData() {
             setTimeout(() => {
                 if (index < stocks.length) {
-                    alphaVantage.getIntraday1MSeriesFor(stocks[index], callback);
+                    alphaVantage.getIntraday1mSeriesForAStock(stocks[index], callback);
                     index++;
                     getData();
                 }
@@ -85,4 +85,4 @@ class AlphaVantage {
 }
 
 
-module.exports = AlphaVantage;
+module.exports = new AlphaVantage('D11MRXG1OJVDIBYU');
