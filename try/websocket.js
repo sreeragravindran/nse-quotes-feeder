@@ -27,7 +27,7 @@ wss.on('connection', function (ws) {
 app.listen(3000, function () {
    console.log('Example app listening on port 3000!')
 
-   alpha.getIntraday1mSeriesForAllStocks(function(error, data){  
+   alpha.getIntraday1mSeriesForStocks(alpha.getAllStocks(), function(error, data){  
         if(data){
             console.log(data.symbol, data.priceVolumeSeries[0].close);
             wss.clients.forEach((ws) => {
@@ -35,5 +35,14 @@ app.listen(3000, function () {
             })     
         }
    })
+
 })
 
+function memoryProfiling(){
+    setTimeout( () => {
+        console.log( process.memoryUsage());
+        memoryProfiling();
+    }, 5000 )
+};
+
+memoryProfiling();

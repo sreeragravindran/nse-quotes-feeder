@@ -22,6 +22,7 @@ class AlphaVantage {
      * @param {function} callback
      */
     getIntraday1mSeriesForAStock(stock, callback) {
+        //console.log('fetching for ', stock.symbol);
         this.data.intraday(stock.symbol, 'compact', 'json', '1min')
             .then(data => {
                 var timeSeries = data['Time Series (1min)'];
@@ -74,9 +75,14 @@ class AlphaVantage {
             (function getData() {
                 setTimeout(() => {
                     if(index < stocks.length){
-                        alphaVantage.getIntraday1mSeriesForAStock(stocks[index], callback);
+                        //console.log(stocks[index].symbol)
+                        //alphaVantage.getIntraday1mSeriesForAStock(stocks[index], callback);
                         index++;
                         getData();            
+                    }
+                    else {
+                        index = 0;
+                        getData();
                     }
                 }, 3000);
             })();
