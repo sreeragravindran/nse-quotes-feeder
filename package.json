@@ -18,6 +18,8 @@
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "restify": "^7.1.1",
+    "sequelize": "^4.37.8",
+    "sqlite3": "^4.0.0",
     "stock-watch": "^0.2.0",
     "time": "^0.12.0",
     "ws": "^5.1.1"

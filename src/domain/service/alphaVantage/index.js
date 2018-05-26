@@ -1,4 +1,4 @@
-var models = require('./models');
+var models = require('../../models');
 
 class AlphaVantage {
     constructor(apiKey) {
@@ -9,7 +9,7 @@ class AlphaVantage {
     getAllStocks() {
         var stocks = [];
         var fs = require('fs');
-        var symbols = fs.readFileSync('data/equities.picks.txt').toString().split("\n");
+        var symbols = fs.readFileSync('data/equities.top-picks.txt').toString().split("\n");
         symbols.forEach(s => {
             stocks.push(new models.Stock(s));
         });
@@ -49,18 +49,7 @@ class AlphaVantage {
     // ensures a request is fired once every nth second 
     getIntraday1mSeriesForAllStocks(callback) {
         var stocks = this.getAllStocks();
-        var index = 0;
-        // hold a reference to the stock exchange object to be used inside the closure instead of 'this'    
-        var alphaVantage = this;
-        (function getData() {
-            setTimeout(() => {
-                if (index < stocks.length) {
-                    alphaVantage.getIntraday1mSeriesForAStock(stocks[index], callback);
-                    index++;
-                    getData();
-                }
-            }, 3000);
-        })();
+        this.getIntraday1mSeriesForStocks(stocks, callback);
     }
 
     /**
@@ -68,6 +57,7 @@ class AlphaVantage {
      * @param {Array[Stocks]} stocks
      * @param {function} callback
      */
+    // TODO: rename the method properly 
     getIntraday1mSeriesForStocks(stocks, callback) {
         if (stocks && stocks.length > 0) {
             var index = 0;
@@ -76,7 +66,7 @@ class AlphaVantage {
                 setTimeout(() => {
                     if(index < stocks.length){
                         //console.log(stocks[index].symbol)
-                        //alphaVantage.getIntraday1mSeriesForAStock(stocks[index], callback);
+                        alphaVantage.getIntraday1mSeriesForAStock(stocks[index], callback);
                         index++;
                         getData();            
                     }
@@ -92,3 +82,4 @@ class AlphaVantage {
 
 
 module.exports = new AlphaVantage('D11MRXG1OJVDIBYU');
+

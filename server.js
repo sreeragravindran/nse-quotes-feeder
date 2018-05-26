@@ -1,9 +1,20 @@
-var restify = require('restify');
+const express = require('express')
+const WebSocketServer = require('ws').Server; 
+const stockUpdaterService = require('./src/domain/service/stockUpdater');
 
-var server = restify.createServer({
-    name: 'nse-price-service'
-})
+var app = express();
 
-server.listen('8080', '127.0.0.1', function(){
-    console.log('%s listening at %s', server.name, server.url);
+// app.get('/', function (req, res) {
+//    res.sendFile('./src', {root: __dirname});
+// })
+
+app.listen(3000, function(){
+    console.log("stock quotes service listening on port 3000 !")
+
+    stockUpdaterService.updateStockQuotes(function(error, data){
+      if(data){
+          console.log("updated database for ", data.symbol );
+      }  
+    })
+
 })
