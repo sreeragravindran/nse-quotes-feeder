@@ -54,26 +54,12 @@ function insertQuote(stock){
     // update in latestQuotes 
     var latestPrice = stock.getLatestPrice();
     
-    return db.models.IntradayQuotes.create({ 
-        symbol : stock.symbol, 
-        timestamp : new Date(),
-        open : latestPrice.open,
-        high : latestPrice.high,
-        low : latestPrice.low,
-        close : latestPrice.close, 
-        volume : latestPrice.volume
-    }).then(function(){
+    return createQuote(stock).then(function(){
         return db.models.LatestQuote.create({
             symbol : stock.symbol,
             closingPrice : latestPrice.close
         });
     });
-    // .then(function(){
-    //     onUpdateCallback(null, stock); 
-    // }).catch(function(error){
-    //     console.log(MODULE_ID, error);
-    //     onUpdateCallback(error, null);
-    // })
     
 }
 
@@ -83,6 +69,18 @@ function updateQuote(stock){
     // update in latestQuotes 
     var latestPrice = stock.getLatestPrice();
     
+    return createQuote(stock).then(function(){
+        return db.models.LatestQuote.update(
+           { closingPrice : latestPrice.close }, 
+           { where : 
+                { symbol : stock.symbol } 
+           } 
+        );
+    })    
+}
+
+function createQuote(stock){
+    var latestPrice = stock.getLatestPrice();
     return db.models.IntradayQuotes.create({ 
         symbol : stock.symbol, 
         timestamp : new Date(),
@@ -91,42 +89,9 @@ function updateQuote(stock){
         low : latestPrice.low,
         close : latestPrice.close, 
         volume : latestPrice.volume
-    }).then(function(){
-        return db.models.LatestQuote.update(
-           { closingPrice : latestPrice.close }, 
-           { where : 
-                { symbol : stock.symbol } 
-           } 
-        );
     })
-    // .then(function(){
-    //     onUpdateCallback(null, stock); 
-    // }).catch(function(error){
-    //     console.log(MODULE_ID, error);
-    //     onUpdateCallback(error, null);
-    // })
-    
 }
 
 module.exports = {
     updateStockQuotes : updateStockQuotes
 }
-
-// db.models.LatestQuote.findOne().then(r => {
-//     console.log(r);
-//  })
-
-// db.models.IntradayQuotes.findOne({    
-//      where : {
-//          symbol : 'ACC'
-//      }
-// }).then(result => {
-//     console.log(result.symbol);
-//     return db.models.IntradayQuotes.findOne({    
-//         where : {
-//             symbol : 'ADANIENT'
-//         }
-//    }) 
-// }).then(result => {
-//     console.log(result.createdAt);
-// })
