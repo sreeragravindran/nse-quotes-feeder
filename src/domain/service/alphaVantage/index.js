@@ -24,9 +24,9 @@ class AlphaVantage {
      */
     getIntraday1mSeriesForAStock(stock, callback) {
         //console.log('fetching for ', stock.symbol);
-        this.data.intraday(stock.symbol, 'compact', 'json', '1min')
+        this.data.intraday(stock.symbol, 'compact', 'json', '5min')
             .then(data => {
-                var timeSeries = data['Time Series (1min)'];
+                var timeSeries = data['Time Series (5min)'];
                 for (var key in timeSeries) {
                     if (timeSeries.hasOwnProperty(key)) {
                         stock.priceVolumeSeries.push(new models.PriceVolumeData(

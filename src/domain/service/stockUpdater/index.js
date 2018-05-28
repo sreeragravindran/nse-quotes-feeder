@@ -8,7 +8,7 @@ Date.prototype.getDiffInMinutesFrom = function(anotherDate){
 }
 
 function updateStockQuotes(onUpdateCallback){
-    alphaVantage.getIntraday1mSeriesForAllStocks(function(error, data){
+    alphaVantage.getIntraday1mSeriesForAllStocks(function(error, stock){
 
         if(error){
             console.error(MODULE_ID, error); 
@@ -16,10 +16,6 @@ function updateStockQuotes(onUpdateCallback){
         }
 
         var now = new Date();
-
-        // todo: try refactoring 
-        var stock = new models.Stock();
-        stock = data; 
         var latestPrice = stock.getLatestPrice();
         
         if(latestPrice){
@@ -34,13 +30,16 @@ function updateStockQuotes(onUpdateCallback){
             db.models.LatestQuote.findOne({
                 where : {symbol : stock.symbol}
             }).then(result => {
-                if(result = null){
-                    insertQuote(stock, onUpdateCallback); 
-                } else {
-                    if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
-                        updateQuote(stock, onUpdateCallback);
-                    }
-                }
+                if(result == null){
+                    return insertQuote(stock); 
+                } else if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
+                    return updateQuote(stock);
+                }                
+            }).then(() => {
+               onUpdateCallback(null, stock);     
+            }).catch((error) => {
+                console.error(MODULE_ID, error);
+                onUpdateCallback(error, null);
             })
 
             // do the itchimoku calculations 
@@ -50,12 +49,12 @@ function updateStockQuotes(onUpdateCallback){
 }
 
 
-function insertQuote(stock, onUpdateCallback){
+function insertQuote(stock){
     // add in intradayQuotes 
     // update in latestQuotes 
     var latestPrice = stock.getLatestPrice();
     
-    db.models.IntradayQuotes.create({ 
+    return db.models.IntradayQuotes.create({ 
         symbol : stock.symbol, 
         timestamp : new Date(),
         open : latestPrice.open,
@@ -68,22 +67,23 @@ function insertQuote(stock, onUpdateCallback){
             symbol : stock.symbol,
             closingPrice : latestPrice.close
         });
-    }).then(function(){
-        onUpdateCallback(null, stock); 
-    }).catch(function(error){
-        console.log(MODULE_ID, error);
-        onUpdateCallback(error, null);
-    })
+    });
+    // .then(function(){
+    //     onUpdateCallback(null, stock); 
+    // }).catch(function(error){
+    //     console.log(MODULE_ID, error);
+    //     onUpdateCallback(error, null);
+    // })
     
 }
 
 
-function updateQuote(stock, onUpdateCallback){
+function updateQuote(stock){
     // add in intradayQuotes 
     // update in latestQuotes 
     var latestPrice = stock.getLatestPrice();
     
-    db.models.IntradayQuotes.create({ 
+    return db.models.IntradayQuotes.create({ 
         symbol : stock.symbol, 
         timestamp : new Date(),
         open : latestPrice.open,
@@ -93,15 +93,18 @@ function updateQuote(stock, onUpdateCallback){
         volume : latestPrice.volume
     }).then(function(){
         return db.models.LatestQuote.update(
-           { closingPrice : latestPrice.close}, 
-           { symbol : stock.symbol }
+           { closingPrice : latestPrice.close }, 
+           { where : 
+                { symbol : stock.symbol } 
+           } 
         );
-    }).then(function(){
-        onUpdateCallback(null, stock); 
-    }).catch(function(error){
-        console.log(MODULE_ID, error);
-       onUpdateCallback(error, null);
     })
+    // .then(function(){
+    //     onUpdateCallback(null, stock); 
+    // }).catch(function(error){
+    //     console.log(MODULE_ID, error);
+    //     onUpdateCallback(error, null);
+    // })
     
 }
 
