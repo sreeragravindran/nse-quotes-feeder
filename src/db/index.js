@@ -1,5 +1,8 @@
 const Sequelize = require('sequelize'); 
-const sequelize = new Sequelize('sqlite:/Users/zf58/sqlite/stock_quotes.db');
+const sequelize = new Sequelize('stockQuotes', '', '', {
+    dialect : 'sqlite',
+    storage : '/Users/zf58/sqlite/stock_quotes.db'
+});
 
 const models = {
     IntradayQuotes : sequelize.define('intraday_quotes', {
@@ -10,7 +13,13 @@ const models = {
         low : {type : Sequelize.DECIMAL(16,4), allowNull: false }, 
         close : {type : Sequelize.DECIMAL(16,4), allowNull: false }, 
         volume : {type : Sequelize.INTEGER(16,4), allowNull: false } 
-    }) 
+    }), 
+    LatestQuote : sequelize.define('latest_quote', {
+        symbol : {type : Sequelize.STRING, allowNull: false, primaryKey : true },
+        closingPrice : { type: Sequelize.DECIMAL(16,4), allowNull: false}        
+    },{
+        freezeTableName: true
+    })
 }
 
 models.IntradayQuotes.removeAttribute('id');

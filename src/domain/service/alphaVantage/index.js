@@ -1,3 +1,4 @@
+const MODULE_ID = "Service.AlphaVantage";
 var models = require('../../models');
 
 class AlphaVantage {
