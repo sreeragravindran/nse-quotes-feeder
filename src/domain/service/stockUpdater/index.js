@@ -1,4 +1,4 @@
-const MODULE_ID = "Service.StockUpdater";
+const MODULE_ID = "domain.service.stockUpdater";
 const alphaVantage = require('../alphaVantage');
 const models = require('../../models');
 const db = require('../../../db');
@@ -19,42 +19,53 @@ function updateStockQuotes(onUpdateCallback){
         var latestPrice = stock.getLatestPrice();
         
         if(latestPrice){
-
-            // check if latestQuote table has entry 
-            // if not, create one and insert into intradayQuotes as well 
-            // else get the latestQuote updatedAt 
-            // if it is updated within the last 5 mins
-            // do nothing 
-            // else, record in intradayQuotes and update in latestQuotes
-            
+            var priceWasUpdated = false; 
             db.models.LatestQuote.findOne({
                 where : {symbol : stock.symbol}
             }).then(result => {
                 if(result == null){
+                    priceWasUpdated = true;
                     return insertQuote(stock); 
                 } else if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
+                    priceWasUpdated = true; 
                     return updateQuote(stock);
                 }                
             }).then(() => {
-               onUpdateCallback(null, stock);     
+                 // do ichimoku calculations                    
+                 db.models.IntradayQuotes.findAll({
+                     where : { symbol : stock.symbol }, 
+                     order : [
+                         ['createdAt', 'DESC'], 
+                     ], 
+                     limit : 26 
+                 }).then(results => {                                            
+                    if(results && results.length >= 9){
+                        // update conversion line 
+                        var ninePeriod = results.slice(0,9) ; 
+                        var ninePeriodHigh = ninePeriod.reduce((max, e) => e.high > max ? e.high : max, results[0].high);                           
+                        var ninePeriodLow = ninePeriod.reduce((min, e) => e.low < min ? e.low : min, results[0].low);                           
+                        var conversionLine = (ninePeriodHigh + ninePeriodLow) / 2 ; 
+                        
+                    }        
+                 })
+
+            }).then(() => {
+                if(priceWasUpdated){                                     
+                    onUpdateCallback(null, stock);     
+                }
             }).catch((error) => {
                 console.error(MODULE_ID, error);
                 onUpdateCallback(error, null);
-            })
-
-            // do the itchimoku calculations 
-        }
-        
+            })            
+        }        
     })    
 }
 
 
 function insertQuote(stock){
-    // add in intradayQuotes 
-    // update in latestQuotes 
     var latestPrice = stock.getLatestPrice();
     
-    return createQuote(stock).then(function(){
+    return insertIntradayQuote(stock).then(function(){
         return db.models.LatestQuote.create({
             symbol : stock.symbol,
             closingPrice : latestPrice.close
@@ -63,13 +74,10 @@ function insertQuote(stock){
     
 }
 
-
 function updateQuote(stock){
-    // add in intradayQuotes 
-    // update in latestQuotes 
     var latestPrice = stock.getLatestPrice();
     
-    return createQuote(stock).then(function(){
+    return insertIntradayQuote(stock).then(function(){
         return db.models.LatestQuote.update(
            { closingPrice : latestPrice.close }, 
            { where : 
@@ -79,7 +87,7 @@ function updateQuote(stock){
     })    
 }
 
-function createQuote(stock){
+function insertIntradayQuote(stock){
     var latestPrice = stock.getLatestPrice();
     return db.models.IntradayQuotes.create({ 
         symbol : stock.symbol, 
@@ -95,3 +103,18 @@ function createQuote(stock){
 module.exports = {
     updateStockQuotes : updateStockQuotes
 }
+
+
+db.models.IntradayQuotes.findAll({
+    where : { symbol : 'ACC' }, 
+    order : [
+        ['createdAt', 'DESC'], 
+    ], 
+    limit : 26 
+}).then(results => {
+    var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
+    console.log(a);    
+        // results.forEach(element => {
+        //     console.log(element.createdAt   );
+        // });        
+})
