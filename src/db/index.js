@@ -6,7 +6,7 @@ const sequelize = new Sequelize('stockQuotes', '', '', {
 
 const models = {
     IntradayQuotes : sequelize.define('intraday_quotes', {
-        //id : { type : Sequelize.INTEGER, primaryKey: true, autoIncrement : true },
+        id : { type : Sequelize.INTEGER, primaryKey: true, autoIncrement : true },
         symbol : { type : Sequelize.STRING, allowNull: false }, 
         timestamp : {type : Sequelize.DATE, allowNull: false }, 
         open : {type : Sequelize.DECIMAL(16,4), allowNull: false }, 

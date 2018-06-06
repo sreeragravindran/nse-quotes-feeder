@@ -120,6 +120,6 @@ db.models.IntradayQuotes.findAll({
     //var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
     //console.log(a);    
          results.forEach(element => {
-            console.log(element.symbol);
+            console.log(element.id);
          });        
 })
