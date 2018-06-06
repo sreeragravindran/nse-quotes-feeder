@@ -22,7 +22,8 @@ function updateStockQuotes(onUpdateCallback){
             var priceWasUpdated = false; 
             db.models.LatestQuote.findOne({
                 where : {symbol : stock.symbol}
-            }).then(result => {
+            })
+            .then(result => {
                 if(result == null){
                     priceWasUpdated = true;
                     return insertQuote(stock); 
@@ -30,30 +31,33 @@ function updateStockQuotes(onUpdateCallback){
                     priceWasUpdated = true; 
                     return updateQuote(stock);
                 }                
-            }).then(() => {
+            })
+            .then(() => {
                  // do ichimoku calculations                    
-                 db.models.IntradayQuotes.findAll({
-                     where : { symbol : stock.symbol }, 
-                     order : [
-                         ['createdAt', 'DESC'], 
-                     ], 
-                     limit : 26 
-                 }).then(results => {                                            
-                    if(results && results.length >= 9){
-                        // update conversion line 
-                        var ninePeriod = results.slice(0,9) ; 
-                        var ninePeriodHigh = ninePeriod.reduce((max, e) => e.high > max ? e.high : max, results[0].high);                           
-                        var ninePeriodLow = ninePeriod.reduce((min, e) => e.low < min ? e.low : min, results[0].low);                           
-                        var conversionLine = (ninePeriodHigh + ninePeriodLow) / 2 ; 
-                        
-                    }        
-                 })
+                //  db.models.IntradayQuotes.findAll({
+                //      where : { symbol : stock.symbol }, 
+                //      order : [
+                //          ['createdAt', 'DESC'], 
+                //      ], 
+                //      limit : 26 
+                //  }).then(results => {                                            
+                //     if(results && results.length >= 9){
+                //         // update conversion line 
+                //         var ninePeriod = results.slice(0,9) ; 
+                //         var ninePeriodHigh = ninePeriod.reduce((max, e) => e.high > max ? e.high : max, results[0].high);                           
+                //         var ninePeriodLow = ninePeriod.reduce((min, e) => e.low < min ? e.low : min, results[0].low);                           
+                //         var conversionLine = (ninePeriodHigh + ninePeriodLow) / 2 ; 
 
-            }).then(() => {
+                //     }        
+                //  })
+
+            })
+            .then(() => {
                 if(priceWasUpdated){                                     
                     onUpdateCallback(null, stock);     
                 }
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 console.error(MODULE_ID, error);
                 onUpdateCallback(error, null);
             })            
@@ -107,14 +111,15 @@ module.exports = {
 
 db.models.IntradayQuotes.findAll({
     where : { symbol : 'ACC' }, 
+    attributes : ['id'],
     order : [
         ['createdAt', 'DESC'], 
     ], 
     limit : 26 
 }).then(results => {
-    var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
-    console.log(a);    
-        // results.forEach(element => {
-        //     console.log(element.createdAt   );
-        // });        
+    //var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
+    //console.log(a);    
+         results.forEach(element => {
+            console.log(element.symbol);
+         });        
 })
