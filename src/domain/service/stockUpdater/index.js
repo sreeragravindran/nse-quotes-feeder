@@ -1,11 +1,12 @@
-const MODULE_ID = "domain.service.stockUpdater";
+const MODULE_ID = "SRC/DOMAIN/SERVICE/STOCKUPDATER";
 const alphaVantage = require('../alphaVantage');
 const models = require('../../models');
 const db = require('../../../db');
+const utils = require('../../../utils');
+const ichimokuCalculator = require('../ichimokuCalculator');
 
-Date.prototype.getDiffInMinutesFrom = function(anotherDate){
-    return Math.round((this.getTime() - anotherDate.getTime()) / 60000 ); 
-}
+
+var BreakSignal = "BreakSignal";
 
 function updateStockQuotes(onUpdateCallback){
     alphaVantage.getIntraday1mSeriesForAllStocks(function(error, stock){
@@ -19,47 +20,50 @@ function updateStockQuotes(onUpdateCallback){
         var latestPrice = stock.getLatestPrice();
         
         if(latestPrice){
-            var priceWasUpdated = false; 
             db.models.LatestQuote.findOne({
                 where : {symbol : stock.symbol}
             })
             .then(result => {
                 if(result == null){
-                    priceWasUpdated = true;
                     return insertQuote(stock); 
-                } else if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
-                    priceWasUpdated = true; 
+                } else { //if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
                     return updateQuote(stock);
-                }                
-            })
-            .then(() => {
-                 // do ichimoku calculations                    
-                //  db.models.IntradayQuotes.findAll({
-                //      where : { symbol : stock.symbol }, 
-                //      order : [
-                //          ['createdAt', 'DESC'], 
-                //      ], 
-                //      limit : 26 
-                //  }).then(results => {                                            
-                //     if(results && results.length >= 9){
-                //         // update conversion line 
-                //         var ninePeriod = results.slice(0,9) ; 
-                //         var ninePeriodHigh = ninePeriod.reduce((max, e) => e.high > max ? e.high : max, results[0].high);                           
-                //         var ninePeriodLow = ninePeriod.reduce((min, e) => e.low < min ? e.low : min, results[0].low);                           
-                //         var conversionLine = (ninePeriodHigh + ninePeriodLow) / 2 ; 
-
-                //     }        
-                //  })
-
-            })
-            .then(() => {
-                if(priceWasUpdated){                                     
-                    onUpdateCallback(null, stock);     
                 }
+                // exit chain here 
+                return Promise.reject(BreakSignal);
+            })
+            .then(() => {
+                 // update ichimoku indicators                     
+                 return db.models.IntradayQuotes.findAll({
+                     where : { symbol : stock.symbol }, 
+                     attributes : ['id','symbol','high','low','open','close','volume'], 
+                     order : [
+                         ['createdAt', 'DESC'], 
+                     ], 
+                     limit : 26 
+                 }).then(priceHistory => {
+                    console.log("calculate and update Ichimoku indicators")
+                    var ichimokuIndicators = ichimokuCalculator.getIndicators(priceHistory); 
+                    return db.models.IntradayQuotes.update(
+                        { 
+                            conversionLine : ichimokuIndicators.conversionLine,
+                            baseLine : ichimokuIndicators.baseLine
+                        },
+                        {   where : 
+                                { id : priceHistory[0].id }
+                        }
+                    )
+                })        
+            })
+            .then(() => {
+                console.log('sending update notification')                                 
+                onUpdateCallback(null, stock);     
             })
             .catch((error) => {
-                console.error(MODULE_ID, error);
-                onUpdateCallback(error, null);
+                if(error != BreakSignal) {
+                    console.error(MODULE_ID, "error: ", error);
+                    onUpdateCallback(error, null);
+                }
             })            
         }        
     })    
@@ -109,17 +113,17 @@ module.exports = {
 }
 
 
-db.models.IntradayQuotes.findAll({
-    where : { symbol : 'ACC' }, 
-    attributes : ['id'],
-    order : [
-        ['createdAt', 'DESC'], 
-    ], 
-    limit : 26 
-}).then(results => {
-    //var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
-    //console.log(a);    
-         results.forEach(element => {
-            console.log(element.id);
-         });        
-})
+// db.models.IntradayQuotes.findAll({
+//     where : { symbol : 'ACC' }, 
+//     attributes : ['id'],
+//     order : [
+//         ['createdAt', 'DESC'], 
+//     ], 
+//     limit : 26 
+// }).then(results => {
+//     //var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
+//     //console.log(a);    
+//          results.forEach(element => {
+//             console.log(element.id);
+//          });        
+// })

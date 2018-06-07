@@ -13,7 +13,9 @@ const models = {
         high : {type : Sequelize.DECIMAL(16,4), allowNull: false }, 
         low : {type : Sequelize.DECIMAL(16,4), allowNull: false }, 
         close : {type : Sequelize.DECIMAL(16,4), allowNull: false }, 
-        volume : {type : Sequelize.INTEGER(16,4), allowNull: false } 
+        volume : {type : Sequelize.INTEGER(16,4), allowNull: false }, 
+        conversionLine : {type: Sequelize.DECIMAL(16,2), allowNull : true },
+        baseLine : {type :Sequelize.DECIMAL(16,2), allowNull: true} 
     }), 
     LatestQuote : sequelize.define('latest_quote', {
         symbol : {type : Sequelize.STRING, allowNull: false, primaryKey : true },

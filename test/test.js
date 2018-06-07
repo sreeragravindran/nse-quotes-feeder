@@ -12,19 +12,34 @@
 //console.log(now+1);
 
 // promise  
+function BreakSignal(){
+
+}
 
 wait = (time) => new Promise((resolve) => setTimeout(() => resolve(), time)); 
 
 wait(1000)
 .then(() => {
-    return new Promise((resolve) => {        
-        setTimeout(() => {
-            console.log("hello"); 
-            resolve()
-        }, 1000)
-    })    
+
+    console.log("one")
+    // return new Promise((resolve) => {        
+    //     setTimeout(() => {
+    //         console.log("hello"); 
+    //         resolve()
+    //     }, 2000)
+    // })   
+    //throw new Error();
+    return Promise.reject("chain broken")
 })
-.then(() => console.log("world"));
+.then(() => { 
+    console.log("two")
+ })
+.then(() => {
+    console.log("three")
+})
+.catch(error => {
+    console.log(error );
+})
 
 
 // // this in method when invoked from closure 
@@ -52,7 +67,3 @@ wait(1000)
 // //p.getName()
 // // console.log();
 // p.getData();
-
-var alpha = require('../src/domain/alpha-vantage');
-
-alpha();

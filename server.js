@@ -13,8 +13,9 @@ app.listen(3000, function(){
 
     stockUpdaterService.updateStockQuotes(function(error, data){
       if(data){
-          console.log("updated database for ", data.symbol );
+          console.log("updated notification received for ", data.symbol );
       }  
     })
 
 })
+
