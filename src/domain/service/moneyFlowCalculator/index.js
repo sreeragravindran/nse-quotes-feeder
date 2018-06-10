@@ -30,7 +30,7 @@ MoneyFlowCalculator.prototype.getIndicators = function(){
         // calculate rest of the metrics 
         var previousCandle = this.priceHistory[1];
         indicators.upOrDown = indicators.averagePrice > previousCandle.averagePrice ? 1 : -1;
-        indicators.rawMoneyFlow = currentCandle.averagePrice * currentCandle.volume;
+        indicators.rawMoneyFlow = indicators.averagePrice * currentCandle.volume;
         indicators.positiveMoneyFlow = indicators.upOrDown > 0 ? indicators.rawMoneyFlow : 0; 
         indicators.negativeMoneyFlow = indicators.upOrDown < 0 ? indicators.rawMoneyFlow : 0;
     }
