@@ -11,9 +11,9 @@ var app = express();
 app.listen(3000, function(){
     console.log("stock quotes service listening on port 3000 !")
 
-    stockUpdaterService.updateStockQuotes(function(error, data){
-      if(data){
-          console.log("updated notification received for ", data.symbol );
+    stockUpdaterService.updateStockQuotes(function(error, stock){
+      if(stock){
+          console.log("updated notification received for ", stock.symbol, stock);
       }  
     })
 

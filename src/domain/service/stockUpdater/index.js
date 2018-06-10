@@ -50,15 +50,23 @@ function updateStockQuotes(onUpdateCallback){
                             leadingSpanA : ichimokuIndicators.leadingSpanA,
                             leadingSpanB : ichimokuIndicators.leadingSpanB
                         },
-                        {   where : 
-                                { id : priceHistory[0].id }
+                        {   where : { id : priceHistory[0].id },
+                            returning : true, 
+                            plain : true
                         }
                     )
+                    .then(() => {
+                        return priceHistory[0].id;
+                    })
                 })        
             })
-            .then(() => {
-                console.log('sending update notification')                                 
-                onUpdateCallback(null, stock);     
+            .then((updatedRecordId) => {
+                console.log('sending update notification for ', stock.symbol) 
+                db.models.IntradayQuotes.findOne({
+                    where : {id :updatedRecordId} 
+                }).then(result => {
+                    onUpdateCallback(null, result.dataValues);  
+                })                                                   
             })
             .catch((error) => {
                 if(error != BreakSignal) {
@@ -128,3 +136,26 @@ module.exports = {
 //             console.log(element.id);
 //          });        
 // })
+
+
+// db.models.IntradayQuotes.update(
+//     { 
+//         leadingSpanB : 41.96
+//     },
+//     {   where : { id : 155},
+//         returning : true
+//     }
+// ).then(function(result){
+//     return 25; 
+// })
+// .then(result => {
+//     console.log(result);
+// })
+
+
+// db.models.IntradayQuotes.findOne({
+//     where : {id : 187},
+//     plain : true
+// }).then(result => {
+//     console.log(result.getAveragePrice());
+// }) 

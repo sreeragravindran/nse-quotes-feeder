@@ -21,6 +21,10 @@ Stock.prototype.getLatestPrice = function(){
     return null;
 }
 
+PriceVolumeData.prototype.getAveragePrice = function(){
+    return (this.high + this.low + this.close) / 3; 
+}
+
 module.exports.Stock = Stock;
 module.exports.PriceVolumeData = PriceVolumeData;
 
