@@ -8,7 +8,7 @@ function IchimokuIndicators(){
 }
 
 function IchimokuCalculator(priceHistory){
-    this.priceHistory = priceHistory;        
+    this.priceHistory = priceHistory;       
 }
 
 IchimokuCalculator.prototype.getIndicators = function(){
@@ -18,7 +18,7 @@ IchimokuCalculator.prototype.getIndicators = function(){
         indicators.conversionLine = this.getConversionLine();
         indicators.baseLine = this.getBaseLine();
         indicators.leadingSpanA = this.getLeadingSpanA();
-        indicators.leadingSpanA = this.getLeadingSpanB();
+        indicators.leadingSpanB = this.getLeadingSpanB();
     }
     return indicators;
     //console.log(MODULE_ID, indicators);
@@ -39,7 +39,11 @@ IchimokuCalculator.prototype.getBaseLine = function(){
 }
 
 IchimokuCalculator.prototype.getLeadingSpanA = function(){
-    return (this.getConversionLine() + this.getBaseLine) / 2.0;
+    var conversionLine = this.getConversionLine();
+    var baseLine = this.getBaseLine();
+    if(conversionLine == null || baseLine == null)
+        return null; 
+    return ((conversionLine + baseLine) / 2.0);
 }
 
 IchimokuCalculator.prototype.getLeadingSpanB = function(){
