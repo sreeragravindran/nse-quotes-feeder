@@ -3,35 +3,49 @@ const MODULE_ID = "SRC/DOMAIN/SERVICE/ICHIMOKUCALCULATOR";
 function IchimokuIndicators(){
    this.conversionLine = null;
    this.baseLine = null; 
+   this.leadingSpanA = null; 
+   this.leadingSpanB = null;
 }
 
-function getIndicators(priceHistory){
+function IchimokuCalculator(priceHistory){
+    this.priceHistory = priceHistory;        
+}
+
+IchimokuCalculator.prototype.getIndicators = function(){
     //console.log(MODULE_ID, "getIndicators");
     var indicators = new IchimokuIndicators();
-
-    if(priceHistory && priceHistory.length >= 9){
-
-        indicators.conversionLine = getConversionLine(priceHistory);
-        
-        if(priceHistory.length >= 26){
-            indicators.baseLine = getBaseLine(priceHistory);
-        }
+    if(this.priceHistory && this.priceHistory.length >= 9){
+        indicators.conversionLine = this.getConversionLine();
+        indicators.baseLine = this.getBaseLine();
+        indicators.leadingSpanA = this.getLeadingSpanA();
+        indicators.leadingSpanA = this.getLeadingSpanB();
     }
-
-    return indicators; 
+    return indicators;
     //console.log(MODULE_ID, indicators);
 }
 
-
-function getConversionLine(priceHistory){
+IchimokuCalculator.prototype.getConversionLine = function(){
     //console.log(MODULE_ID, "getConversionLine");
-    return getMidPoint(priceHistory.slice(0,9)); 
-
+    if(this.priceHistory.length >= 9 )
+        return getMidPoint(this.priceHistory.slice(0,9)); 
+    return null;
 }
 
-function getBaseLine(priceHistory){
+IchimokuCalculator.prototype.getBaseLine = function(){
     //console.log(MODULE_ID, "getBaseLine");
-    return getMidPoint(priceHistory.slice(0,26));
+    if(this.priceHistory.length >= 26)
+        return getMidPoint(this.priceHistory.slice(0,26));
+    return null;
+}
+
+IchimokuCalculator.prototype.getLeadingSpanA = function(){
+    return (this.getConversionLine() + this.getBaseLine) / 2.0;
+}
+
+IchimokuCalculator.prototype.getLeadingSpanB = function(){
+    if(this.priceHistory.length >= 52)
+        return getMidPoint(this.priceHistory.slice(0,52));
+    return null;
 }
 
 function getMidPoint(priceHistory){
@@ -42,7 +56,4 @@ function getMidPoint(priceHistory){
 }
 
 
-module.exports = {
-    getIndicators : getIndicators
-}; 
-//console.log(new IchimokuIndicators().baseLine);
+module.exports = IchimokuCalculator;

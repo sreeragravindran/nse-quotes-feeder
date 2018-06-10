@@ -3,8 +3,7 @@ const alphaVantage = require('../alphaVantage');
 const models = require('../../models');
 const db = require('../../../db');
 const utils = require('../../../utils');
-const ichimokuCalculator = require('../ichimokuCalculator');
-
+const IchimokuCalculator = require('../ichimokuCalculator');
 
 var BreakSignal = "BreakSignal";
 
@@ -40,14 +39,16 @@ function updateStockQuotes(onUpdateCallback){
                      order : [
                          ['createdAt', 'DESC'], 
                      ], 
-                     limit : 26 
+                     limit : 52
                  }).then(priceHistory => {
-                    console.log("calculate and update Ichimoku indicators")
-                    var ichimokuIndicators = ichimokuCalculator.getIndicators(priceHistory); 
+                    console.log("update Ichimoku indicators")
+                    var ichimokuIndicators = new IchimokuCalculator(priceHistory).getIndicators(); 
                     return db.models.IntradayQuotes.update(
                         { 
                             conversionLine : ichimokuIndicators.conversionLine,
-                            baseLine : ichimokuIndicators.baseLine
+                            baseLine : ichimokuIndicators.baseLine,
+                            leadingSpanA : ichimokuIndicators.leadingSpanA,
+                            leadingSpanB : ichimokuIndicators.leadingSpanB
                         },
                         {   where : 
                                 { id : priceHistory[0].id }
