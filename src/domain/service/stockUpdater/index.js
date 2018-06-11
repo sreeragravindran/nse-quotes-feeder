@@ -42,67 +42,11 @@ function updateStockQuotes(onUpdateCallback){
                      limit : 52
                  }).then(priceHistory => {
                     console.log("update Ichimoku indicators")
-
-                    var ichimokuIndicators = new IchimokuCalculator(priceHistory).getIndicators(); 
-                    var moneyFlowCalaculator = new MoneyFlowCalculator(priceHistory);
-                    var moneyFlowIndicators = moneyFlowCalaculator.getIndicators();
-                    var currentCandle = priceHistory[0];
-                    currentCandle.averagePrice = moneyFlowIndicators.averagePrice;
-                    currentCandle.upOrDown = moneyFlowIndicators.upOrDown;
-                    currentCandle.rawMoneyFlow = moneyFlowIndicators.rawMoneyFlow;
-                    currentCandle.positiveMoneyFlow = moneyFlowIndicators.positiveMoneyFlow;
-                    currentCandle.negativeMoneyFlow = moneyFlowIndicators.negativeMoneyFlow;
-                    
-                    var fourteenPeriodMFRatios = moneyFlowCalaculator.getRatiosForPeriod(14);
-
-                    return db.models.IntradayQuotes.update(
-                        { 
-                            conversionLine : ichimokuIndicators.conversionLine,
-                            baseLine : ichimokuIndicators.baseLine,
-                            leadingSpanA : ichimokuIndicators.leadingSpanA,
-                            leadingSpanB : ichimokuIndicators.leadingSpanB,
-                            averagePrice : moneyFlowIndicators.averagePrice,
-                            upOrDown : moneyFlowIndicators.upOrDown,
-                            rawMoneyFlow : moneyFlowIndicators.rawMoneyFlow,
-                            positiveMoneyFlow : moneyFlowIndicators.positiveMoneyFlow,
-                            negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow
-                        },
-                        {   where : { id : priceHistory[0].id },
-                            returning : true, 
-                            plain : true
-                        }
-                    )
-                    .then(() => {
-                        var currentCandle = priceHistory[0];
-                        return {
-                            symbol : currentCandle.symbol,
-                            open : currentCandle.open,
-                            high : currentCandle.high,
-                            low : currentCandle.low,
-                            close : currentCandle.close, 
-                            volume : currentCandle.volume,
-                            conversionLine : ichimokuIndicators.conversionLine,
-                            baseLine : ichimokuIndicators.baseLine,
-                            leadingSpanA : ichimokuIndicators.leadingSpanA,
-                            leadingSpanB : ichimokuIndicators.leadingSpanB,
-                            averagePrice : moneyFlowIndicators.averagePrice,
-                            upOrDown : moneyFlowIndicators.upOrDown,
-                            rawMoneyFlow : moneyFlowIndicators.rawMoneyFlow,
-                            positiveMoneyFlow : moneyFlowIndicators.positiveMoneyFlow,
-                            negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow,
-                            fourteenPeriodMFRatio : fourteenPeriodMFRatios.MoneyFlowRatio,
-                            fourteenPeriodMFIndex : fourteenPeriodMFRatios.MoneyFlowIndex 
-                        }
-                    })
+                    return updateIndicators(priceHistory);
                 })        
             })
             .then((result) => {
-                console.log('sending update notification for ', stock.symbol) 
-                // db.models.IntradayQuotes.findOne({
-                //     where : {id :updatedRecordId} 
-                // }).then(result => {
-                //     onUpdateCallback(null, result.dataValues);  
-                // })      
+                console.log('sending update notification for ', stock.symbol)     
                 onUpdateCallback(null, result);                                             
             })
             .catch((error) => {
@@ -154,45 +98,60 @@ function insertIntradayQuote(stock){
     })
 }
 
+function updateIndicators(priceHistory){
+
+    var ichimokuIndicators = new IchimokuCalculator(priceHistory).getIndicators(); 
+    var moneyFlowCalaculator = new MoneyFlowCalculator(priceHistory);
+    var moneyFlowIndicators = moneyFlowCalaculator.getIndicators();
+    var currentCandle = priceHistory[0];
+    currentCandle.averagePrice = moneyFlowIndicators.averagePrice;
+    currentCandle.upOrDown = moneyFlowIndicators.upOrDown;
+    currentCandle.rawMoneyFlow = moneyFlowIndicators.rawMoneyFlow;
+    currentCandle.positiveMoneyFlow = moneyFlowIndicators.positiveMoneyFlow;
+    currentCandle.negativeMoneyFlow = moneyFlowIndicators.negativeMoneyFlow;
+    
+    var fourteenPeriodMFRatios = moneyFlowCalaculator.getRatiosForPeriod(14);
+
+    return db.models.IntradayQuotes.update(
+        { 
+            conversionLine : ichimokuIndicators.conversionLine,
+            baseLine : ichimokuIndicators.baseLine,
+            leadingSpanA : ichimokuIndicators.leadingSpanA,
+            leadingSpanB : ichimokuIndicators.leadingSpanB,
+            averagePrice : moneyFlowIndicators.averagePrice,
+            upOrDown : moneyFlowIndicators.upOrDown,
+            rawMoneyFlow : moneyFlowIndicators.rawMoneyFlow,
+            positiveMoneyFlow : moneyFlowIndicators.positiveMoneyFlow,
+            negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow
+        },
+        {   
+            where : { id : priceHistory[0].id }
+        }
+    )
+    .then(() => {
+        var currentCandle = priceHistory[0];
+        return {
+            symbol : currentCandle.symbol,
+            open : currentCandle.open,
+            high : currentCandle.high,
+            low : currentCandle.low,
+            close : currentCandle.close, 
+            volume : currentCandle.volume,
+            conversionLine : ichimokuIndicators.conversionLine,
+            baseLine : ichimokuIndicators.baseLine,
+            leadingSpanA : ichimokuIndicators.leadingSpanA,
+            leadingSpanB : ichimokuIndicators.leadingSpanB,
+            averagePrice : moneyFlowIndicators.averagePrice,
+            upOrDown : moneyFlowIndicators.upOrDown,
+            rawMoneyFlow : moneyFlowIndicators.rawMoneyFlow,
+            positiveMoneyFlow : moneyFlowIndicators.positiveMoneyFlow,
+            negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow,
+            fourteenPeriodMFRatio : fourteenPeriodMFRatios.MoneyFlowRatio,
+            fourteenPeriodMFIndex : fourteenPeriodMFRatios.MoneyFlowIndex 
+        }
+    })
+}
+
 module.exports = {
     updateStockQuotes : updateStockQuotes
 }
-
-
-// db.models.IntradayQuotes.findAll({
-//     where : { symbol : 'ACC' }, 
-//     attributes : ['id'],
-//     order : [
-//         ['createdAt', 'DESC'], 
-//     ], 
-//     limit : 26 
-// }).then(results => {
-//     //var a = results.reduce((max, e) => e.volume > max ? e.volume : max, results[0].volume);
-//     //console.log(a);    
-//          results.forEach(element => {
-//             console.log(element.id);
-//          });        
-// })
-
-
-// db.models.IntradayQuotes.update(
-//     { 
-//         leadingSpanB : 41.96
-//     },
-//     {   where : { id : 155},
-//         returning : true
-//     }
-// ).then(function(result){
-//     return 25; 
-// })
-// .then(result => {
-//     console.log(result);
-// })
-
-
-// db.models.IntradayQuotes.findOne({
-//     where : {id : 187},
-//     plain : true
-// }).then(result => {
-//     console.log(result.getAveragePrice());
-// }) 
