@@ -3,7 +3,7 @@
 
 var express = require('express')
 var WebSocketServer = require('ws').Server; 
-var alpha = require('../src/domain/alpha-vantage');
+var alpha = require('../src/domain/service/alphaVantage');
 
 var app = express();
 
@@ -27,7 +27,7 @@ wss.on('connection', function (ws) {
 app.listen(3000, function () {
    console.log('Example app listening on port 3000!')
 
-   alpha.getIntraday1mSeriesForStocks(alpha.getAllStocks(), function(error, data){  
+   alpha.getIntraday1mSeriesForAllStocks(function(error, data){  
         if(data){
             console.log(data.symbol, data.priceVolumeSeries[0].close);
             wss.clients.forEach((ws) => {
