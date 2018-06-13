@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize'); 
 const sequelize = new Sequelize('stockQuotes', '', '', {
     dialect : 'sqlite',
-    storage : '/Users/zf58/sqlite/stock_quotes.db'
+    storage : '/opt/sqlite/stock_quotes.db'
 });
 
 const models = {
@@ -43,3 +43,10 @@ module.exports = {
     dbInstance : sequelize, 
     models : models
 }
+
+
+models.LatestQuote.findOne({
+    where : { symbol : 'ACC' }
+}).then(result => {
+    console.log(result.dataValues);
+})
