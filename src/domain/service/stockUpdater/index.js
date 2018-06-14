@@ -41,12 +41,12 @@ function updateStockQuotes(onUpdateCallback){
                      ], 
                      limit : 52
                  }).then(priceHistory => {
-                    console.log("update Ichimoku indicators")
+                   // console.log("update Ichimoku indicators")
                     return updateIndicators(priceHistory);
                 })        
             })
             .then((result) => {
-                console.log('sending update notification for ', stock.symbol)     
+                //console.log('sending update notification for ', stock.symbol)     
                 onUpdateCallback(null, result);                                             
             })
             .catch((error) => {

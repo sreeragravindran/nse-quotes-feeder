@@ -16,6 +16,6 @@ app.listen(3000, function(){
           console.log("updated notification received for ", stock.symbol, stock);
       }  
     })
-
 })
 
+// 
