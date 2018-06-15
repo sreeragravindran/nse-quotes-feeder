@@ -1,6 +1,7 @@
 const express = require('express')
 const WebSocketServer = require('ws').Server; 
 const stockUpdaterService = require('./src/domain/service/stockUpdater');
+const viewModels = require('./src/views/models');
 
 var app = express();
 
@@ -11,11 +12,10 @@ var app = express();
 app.listen(3000, function(){
     console.log("stock quotes service listening on port 3000 !")
 
-    stockUpdaterService.updateStockQuotes(function(error, stock){
-      if(stock){
-          console.log("updated notification received for ", stock.symbol, stock);
+    stockUpdaterService.updateStockQuotes(function(error, latestCandle){
+      if(latestCandle){
+          console.log("updated notification received for ", latestCandle.symbol, latestCandle);
+          var viewModel = new viewModels.IchimokuCloudViewModel().mapFrom(latestCandle);  
       }  
     })
 })
-
-// 
