@@ -4,6 +4,12 @@ Date.prototype.getDiffInMinutesFrom = function(anotherDate){
     return Math.round((this.getTime() - anotherDate.getTime()) / 60000 ); 
 }
 
+Date.prototype.isBetween = function(startDate, endDate){
+    if(this.getTime() >= startDate.getTime() && this.getTime() <= endDate.getTime()){
+        return true;
+    }
+    return false;
+}
 
 // Object Array Extensions 
 
@@ -39,3 +45,13 @@ Array.prototype.sum = function(key){
 // var result = acc.priceVolumeSeries.filter(e => e.open > 0);
 
 //  console.log(result.length);
+
+// var now = new Date();
+// var sDate = new Date(2018, 5, 19, 15, 0 , 0); 
+// var eDate = new Date(2018, 5, 19, 16, 0 , 0); 
+
+// console.log(now.getMonth());
+// console.log(sDate);
+// console.log(eDate);
+
+// console.log(now.isBetween(sDate, eDate));

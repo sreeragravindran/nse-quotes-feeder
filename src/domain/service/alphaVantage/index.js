@@ -1,4 +1,4 @@
-const MODULE_ID = "Service.AlphaVantage";
+const MODULE_ID = "SRC/DOMAIN/ALPHAVANTAGE/";
 var models = require('../../models');
 
 class AlphaVantage {
@@ -24,41 +24,45 @@ class AlphaVantage {
      */
     getIntraday1mSeriesForAStock(stock, callback) {
         //console.log('fetching for ', stock.symbol);
-        this.data.intraday(stock.symbol, 'compact', 'json', '1min')
-            .then(data => {
-                var timeSeries = data['Time Series (1min)'];
-                for (var key in timeSeries) {
-                    if (timeSeries.hasOwnProperty(key)) {
-                        stock.priceVolumeSeries.push(new models.PriceVolumeData(
-                            key, 
-                            timeSeries[key]['1. open'], 
-                            timeSeries[key]['2. high'], 
-                            timeSeries[key]['3. low'], 
-                            timeSeries[key]['4. close'], 
-                            timeSeries[key]['5. volume'])
-                        );
+        if(isMarketOpen()){
+            this.data.intraday(stock.symbol, 'compact', 'json', '1min')
+                .then(data => {
+                    var timeSeries = data['Time Series (1min)'];
+                    for (var key in timeSeries) {
+                        if (timeSeries.hasOwnProperty(key)) {
+                            stock.priceVolumeSeries.push(new models.PriceVolumeData(
+                                key, 
+                                timeSeries[key]['1. open'], 
+                                timeSeries[key]['2. high'], 
+                                timeSeries[key]['3. low'], 
+                                timeSeries[key]['4. close'], 
+                                timeSeries[key]['5. volume'])
+                            );
+                        }
                     }
-                }
-                return callback(null, stock);
-            })
-            .catch((error) => {
-                return callback({ stock: stock, errorMessage: error });
-            });
+                    return callback(null, stock);
+                })
+                .catch((error) => {
+                    return callback({ stock: stock, errorMessage: error });
+                });
+            }
+            console.log(MODULE_ID, " marked is closed");
+            //return callback({ stock: stock, errorMessage: "market is closed" });
     }
 
-    // encapsulates the logic to regulate the calls to api for multiple stocks 
-    // ensures a request is fired once every nth second 
+
     getIntraday1mSeriesForAllStocks(callback) {
         var stocks = this.getAllStocks();
         this.getIntraday1mSeriesForStocks(stocks, callback);
     }
 
     /**
-     *
+     * 
      * @param {Array[Stocks]} stocks
      * @param {function} callback
      */
-    // TODO: rename the method properly 
+    // encapsulates the logic to regulate the calls to api for multiple stocks 
+    // ensures a request is fired once every nth second 
     getIntraday1mSeriesForStocks(stocks, callback) {
         if (stocks && stocks.length > 0) {
             var index = 0;
@@ -81,6 +85,12 @@ class AlphaVantage {
     }
 }
 
+function isMarketOpen(){
+    var now = new Date();
+    var marketOpenTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 15, 0);
+    var marketCloseTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 30, 0);
+    return now.isBetween(marketOpenTime, marketCloseTime);
+}
 
 module.exports = new AlphaVantage('D11MRXG1OJVDIBYU');
 

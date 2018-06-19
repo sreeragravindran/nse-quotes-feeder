@@ -11,7 +11,7 @@ function updateStockQuotes(onUpdateCallback){
     alphaVantage.getIntraday1mSeriesForAllStocks(function(error, stock){
 
         if(error){
-            console.error(MODULE_ID, error); 
+            //console.error(MODULE_ID, error); 
             return;
         }
 
