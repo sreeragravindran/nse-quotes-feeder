@@ -1,0 +1,121 @@
+<html>
+<head>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+  
+       
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">       
+        
+</head>
+<body>
+   <div id="stocks_table"></div>
+
+
+   
+</body>
+
+
+
+
+
+<script type="text/babel">
+
+
+class TableComponent extends React.Component {
+  
+  constructor(props) {
+          super(props);
+         this.tick = this.tick.bind(this); 
+          const cols = this.props.col; 
+          const rows = this.props.row; 
+          this.state = {
+                  dataColumns:cols,
+                  dataRows:rows
+
+          }; 
+          console.log(this.state.dataRows); 
+}
+
+ componentDidMount() {
+   this.timerID = setInterval(
+      () => this.tick(),
+      3000
+    );
+}
+
+tick () {
+
+        
+    setTimeout(function(){
+    console.log("it will change values of rows after two seconds ");
+}, 2000);
+
+ this.setState({ dataRows : [{
+    'Stock': 'ACC',
+    'Open': 150,
+    'High': 134,
+    'Low': 112
+  }, {
+    'Stock':'BCC',
+    'Open': 50,
+    'High': 432,
+    'Low': 12
+  }] });
+ 
+}
+
+
+  
+  render () {
+ 
+var tableHeaders = (<thead>
+          <tr> {this.state.dataColumns.map( (column) => <th>{column}</th>)} </tr>
+      </thead>);
+
+var tableBody = this.state.dataRows.map((row) =>
+        <tr> {this.state.dataColumns.map((column) => <td>{row[column]}</td> )} </tr> );
+     
+    // Decorate with Bootstrap CSS
+    return (<table className="table table-bordered table-hover" width="100%">
+        {tableHeaders}
+         {tableBody}
+
+         
+      </table>); 
+}
+}
+        
+
+// Example Data
+  var columns = ['Stock', 'Open', 'High', 'Low']; 
+  var rows =  [{
+    'Stock': 'ACC',
+    'Open': 50,
+    'High': 34,
+    'Low': 12
+  }, {
+    'Stock':'BCC',
+    'Open': 50,
+    'High': 432,
+    'Low': 12
+  }]; 
+
+
+
+
+ReactDOM.render(
+  <TableComponent col = {columns} row ={rows} />,
+  document.getElementById('stocks_table'));
+ 
+
+
+
+
+</script>
+               
+</html>
+
