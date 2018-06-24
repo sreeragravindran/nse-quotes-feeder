@@ -1,22 +1,23 @@
 const express = require('express')
 const WebSocketServer = require('ws').Server; 
-const stockUpdaterService = require('./src/domain/service/stockUpdater');
-const viewModels = require('./src/views/models');
+const stockUpdaterService = require('./domain/service/stockUpdater');
+const viewModels = require('./views/models');
 
-var app = express();
+var server = express();
 
-// app.get('/', function (req, res) {
-//    res.sendFile('./src', {root: __dirname});
-// })
+server.use(express.static(__dirname + '/src/views'));
+
+require('./routes')(server);
 
 var wss = new WebSocketServer({port: 40510}); 
+
 wss.on('connection', function (ws) {
     ws.on('message', function (message) {    
         //console.log('received: %s', message)
     })
 })
 
-app.listen(3000, function(){
+server.listen(3000, function(){
     console.log("stock quotes service listening on port 3000 !")
 
     stockUpdaterService.updateStockQuotes(function(error, latestCandle){
@@ -28,5 +29,4 @@ app.listen(3000, function(){
         })   
       }  
     })
-    
 })

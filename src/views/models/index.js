@@ -11,6 +11,7 @@ IchimokuCloudViewModel.prototype.mapFrom = function(candleData){
     this.conversionLine = getConversionLine(candleData.low, candleData.high, candleData.conversionLine);
     this.baseLine = getBaseLine(candleData.low, candleData.high, candleData.baseLine);
     this.cloud = getWhereInCloud(candleData);
+    return this;
 }
 
 function getConversionLine(low, high, conversionLine){
@@ -26,7 +27,7 @@ function getConversionLine(low, high, conversionLine){
 }
 
 function getBaseLine(low, high, baseLine){
-    if(notNull(low, high, conversionLine)){
+    if(notNull(low, high, baseLine)){
         if(low > baseLine){
             return "ABOVE RED";
         }

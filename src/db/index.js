@@ -39,14 +39,27 @@ models.IntradayQuotes.prototype.getAveragePrice = function(){
     return ( this.high + this.low + this.close) / 3;
 }
 
+models.IntradayQuotes.getIchimokuIndicators = function(){
+    return sequelize.query(`
+        SELECT 
+            iq.symbol, iq.open, iq.high, iq.low, iq.close, iq.volume, iq.conversionLine, iq.baseLine, 
+            iq.leadingSpanA, iq.leadingSpanB, iq.averagePrice, iq.upOrDown,
+            iq.rawMoneyFlow, iq.positiveMoneyFlow, iq.negativeMoneyFlow
+        FROM 
+            intraday_quotes iq 
+        JOIN
+        (
+            SELECT symbol, MAX(id) AS id 
+            FROM intraday_quotes 
+            GROUP BY symbol  
+        ) iqMax
+        ON iq.id = iqMax.id`
+    ).then(result => {
+        return result[0]; 
+    })
+}
+
 module.exports = {
     dbInstance : sequelize, 
     models : models
 }
-
-
-models.LatestQuote.findOne({
-    where : { symbol : 'ACC' }
-}).then(result => {
-    console.log(result.dataValues);
-})

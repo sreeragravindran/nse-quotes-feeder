@@ -1,5 +1,6 @@
 const MODULE_ID = "SRC/DOMAIN/ALPHAVANTAGE/";
 var models = require('../../models');
+var IsMarketClosed; 
 
 class AlphaVantage {
     constructor(apiKey) {
@@ -25,6 +26,7 @@ class AlphaVantage {
     getIntraday1mSeriesForAStock(stock, callback) {
         //console.log('fetching for ', stock.symbol);
         if(isMarketOpen()){
+            IsMarketClosed = false;
             this.data.intraday(stock.symbol, 'compact', 'json', '1min')
                 .then(data => {
                     var timeSeries = data['Time Series (1min)'];
@@ -46,8 +48,12 @@ class AlphaVantage {
                     return callback({ stock: stock, errorMessage: error });
                 });
             }
-            console.log(MODULE_ID, " marked is closed");
-            //return callback({ stock: stock, errorMessage: "market is closed" });
+            else{
+                if(!IsMarketClosed){
+                    console.log(MODULE_ID, " marked is closed");
+                    IsMarketClosed = true;
+                }
+            }
     }
 
 
@@ -89,7 +95,7 @@ function isMarketOpen(){
     var now = new Date();
     var marketOpenTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 15, 0);
     var marketCloseTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 30, 0);
-    return now.isBetween(marketOpenTime, marketCloseTime);
+    return (now.getDay() > 0 && now.getDay() < 6 && now.isBetween(marketOpenTime, marketCloseTime));
 }
 
 module.exports = new AlphaVantage('D11MRXG1OJVDIBYU');
