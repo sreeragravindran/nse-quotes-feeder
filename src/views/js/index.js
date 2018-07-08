@@ -7,10 +7,17 @@
         .then(function success(response){
             stocks = response.data;
             $scope.items = stocks;
-        }, function error(errorResponse){
 
+            setTimeout(function(){ 
+                $scope.items[0] = { "symbol" : "ACC", "baseLine" : "ABOVE RED", "conversionLine" : "ABOVE BLUE", "cloud" : "ABOVE CLOUD" };       
+            }, 3000);
+
+        }, function error(errorResponse){
+            
         });
         // $scope.items = 
+
+        
 
     });
   })(window.angular);
