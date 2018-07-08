@@ -4,7 +4,7 @@ const ViewModels = require('../../views/models')
 
 // server is an express server object 
 function registerRoutes(server){
-    server.get("/stocks/ichimokuindicators", function(req, res){
+    server.get("/stocks/ichimoku", function(req, res){
         var viewModels = new Array();
 
         db.models.IntradayQuotes.getIchimokuIndicators()

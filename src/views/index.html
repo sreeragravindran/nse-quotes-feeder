@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ichimoku Cloud Indicators</title>
+  <!-- <link rel="stylesheet" href="css/animations.css" type="text/css"> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js"></script>
+  <script src="js/index.js"></script>
+  
+</head>
+<body ng-app="ngIndex">
+  <div ng-controller="homeController" class="container">
+
+    <h3>Ichimoku Cloud Indicators </h3>
+    <div class="table-responsive">
+        <table class="table">
+        <tr>
+            <th>Symbol</th>
+            <th>Conversion Line</th>
+            <th>Base Line</th>
+            <th>Cloud</th>
+        </tr>
+        <tr ng-repeat="item in items">
+            <td>{{item.symbol}}</td>
+            <td>{{item.convertionLine}}</td>
+            <td>{{item.baseLine}}</td>
+            <td>{{item.cloud}}</td>
+        </tr>   
+        </table>
+    </div>    
+  </div>
+</body>
+</html> 

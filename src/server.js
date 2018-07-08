@@ -5,7 +5,9 @@ const viewModels = require('./views/models');
 
 var server = express();
 
-server.use(express.static(__dirname + '/src/views'));
+server.use(express.static(__dirname + '/views'));
+
+//console.log(__dirname);
 
 require('./routes')(server);
 
