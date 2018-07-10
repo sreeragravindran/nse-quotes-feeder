@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ichimoku Cloud Indicators</title>
+  <!-- <link rel="stylesheet" href="css/animations.css" type="text/css"> -->
+  <link rel="stylesheet" href="css/bootstrap.3.3.7.min.css">
+  <script src="js/jquery.3.3.1.js"></script>
+  <script src="js/bootstrap.3.3.7.min.js"></script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js"></script>
+  <script src="js/index.js"></script>
+
+</head>
+<body ng-app="ngIndex">
+  <div ng-controller="homeController" class="">
+
+    <h3>Ichimoku Cloud Indicators </h3>
+    <div class="table-responsive">
+        <table class="table">
+        <tr>
+            <th>Symbol</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Conversion Line</th>
+            <th>Base Line</th>
+            <th>Cloud</th>
+            <th>14 Period MF Ratio</th>
+            <th>14 Period MF Index</th>
+        </tr>
+        <tr ng-repeat="stock in stocks" >
+            <td><input type="text" ng-model="stock.symbol" disabled="disabled" style="border:none"/> </td>
+            <td><input type="text" ng-model="stock.open" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.high" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.low" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.close" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.conversionLine" disabled="enabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.baseLine" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.cloud" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.fourteenPeriodMFRatio" disabled="disabled" style="border:none"/></td>
+            <td><input type="text" ng-model="stock.fourteenPeriodMFIndex" disabled="disabled" style="border:none"/></td>
+        </tr>    
+        </table>
+    </div>    
+  </div>
+</body>
+</html> 

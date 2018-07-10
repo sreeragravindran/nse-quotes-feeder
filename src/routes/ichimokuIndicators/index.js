@@ -4,13 +4,16 @@ const ViewModels = require('../../views/models')
 
 // server is an express server object 
 function registerRoutes(server){
-    server.get("/stocks/ichimokuindicators", function(req, res){
+    server.get("/stocks/ichimoku", function(req, res){
         var viewModels = new Array();
 
         db.models.IntradayQuotes.getIchimokuIndicators()
         .then(stocksWithIndicators => {
             stocksWithIndicators.forEach(element => {
-                viewModels.push(new ViewModels.IchimokuCloudViewModel().mapFrom(element)) 
+                //console.log(element);
+                var vm = new ViewModels.IchimokuCloudViewModel().mapFrom(element);
+                viewModels.push(vm);
+                //console.log(vm)
             });
             res.send(viewModels);            
         })

@@ -1,16 +1,28 @@
 
 function IchimokuCloudViewModel(){
     this.symbol = '';
+    this.open = '';
+    this.high = '';
+    this.low = '';
+    this.close = '';
     this.conversionLine = '';
     this.baseLine = '';
     this.cloud = '';
+    this.fourteenPeriodMFRatio = '';
+    this.fourteenPeriodMFIndex = '';
 }
 
 IchimokuCloudViewModel.prototype.mapFrom = function(candleData){
     this.symbol = candleData.symbol;
+    this.open = candleData.open;
+    this.high = candleData.high;
+    this.low = candleData.low;
+    this.close = candleData.close;
     this.conversionLine = getConversionLine(candleData.low, candleData.high, candleData.conversionLine);
     this.baseLine = getBaseLine(candleData.low, candleData.high, candleData.baseLine);
     this.cloud = getWhereInCloud(candleData);
+    this.fourteenPeriodMFIndex = candleData.fourteenPeriodMFIndex;
+    this.fourteenPeriodMFRatio = candleData.fourteenPeriodMFIndex;
     return this;
 }
 
