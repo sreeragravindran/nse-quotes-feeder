@@ -1,4 +1,5 @@
 const MODULE_ID = "SRC/DOMAIN/ALPHAVANTAGE/";
+const config = require('../../../../config');
 var models = require('../../models');
 var IsMarketClosed; 
 
@@ -27,9 +28,9 @@ class AlphaVantage {
         //console.log('fetching for ', stock.symbol);
         if(isMarketOpen()){
             IsMarketClosed = false;
-            this.data.intraday(stock.symbol, 'compact', 'json', '1min')
+            this.data.intraday(stock.symbol, 'compact', 'json', '5min')
                 .then(data => {
-                    var timeSeries = data['Time Series (1min)'];
+                    var timeSeries = data['Time Series (5min)'];
                     for (var key in timeSeries) {
                         if (timeSeries.hasOwnProperty(key)) {
                             stock.priceVolumeSeries.push(new models.PriceVolumeData(
@@ -85,18 +86,21 @@ class AlphaVantage {
                         index = 0;
                         getData();
                     }
-                }, 3000);
+                }, config.alphaVantage.requestInterval);
             })();
         }
     }
 }
 
 function isMarketOpen(){
-    var now = new Date();
-    var marketOpenTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 15, 0);
-    var marketCloseTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 30, 0);
-    return (now.getDay() > 0 && now.getDay() < 6 && now.isBetween(marketOpenTime, marketCloseTime));
+    if(config.alphaVantage.validateMarketHours){
+        var now = new Date();
+        var marketOpenTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 15, 0);
+        var marketCloseTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 30, 0);
+        return (now.getDay() > 0 && now.getDay() < 6 && now.isBetween(marketOpenTime, marketCloseTime));
+    }
+    return true;
 }
 
-module.exports = new AlphaVantage('D11MRXG1OJVDIBYU');
+module.exports = new AlphaVantage(config.alphaVantage.apiKey);
 

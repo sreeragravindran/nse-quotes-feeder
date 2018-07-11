@@ -1,7 +1,8 @@
+const config = require('../../config');
 const Sequelize = require('sequelize'); 
 const sequelize = new Sequelize('stockQuotes', '', '', {
     dialect : 'sqlite',
-    storage : '/opt/sqlite/stock_quotes.db'
+    storage : config.db.storage
 });
 
 const models = {

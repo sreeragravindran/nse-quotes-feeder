@@ -24,8 +24,10 @@ function updateStockQuotes(onUpdateCallback){
             })
             .then(result => {
                 if(result == null){
+                    console.log("insert quote");
                     return insertQuote(stock); 
-                } else { //if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
+                } else if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
+                    console.log("update quote");
                     return updateQuote(stock);
                 }
                 // exit chain here 
