@@ -40,12 +40,25 @@ models.IntradayQuotes.prototype.getAveragePrice = function(){
     return ( this.high + this.low + this.close) / 3;
 }
 
+models.IntradayQuotes.prototype.isEqual(other) = function(){
+    if(this.open == other.open && 
+        this.close == other.close && 
+        this.high == other.high &&
+        this.low == other.low &&
+        this.volume == other.volume
+    ){
+        return true;
+    }
+    return false;    
+}
+
 models.IntradayQuotes.getIchimokuIndicators = function(){
     return sequelize.query(`
         SELECT 
             iq.symbol, iq.open, iq.high, iq.low, iq.close, iq.volume, iq.conversionLine, iq.baseLine, 
             iq.leadingSpanA, iq.leadingSpanB, iq.averagePrice, iq.upOrDown,
-            iq.rawMoneyFlow, iq.positiveMoneyFlow, iq.negativeMoneyFlow
+            iq.rawMoneyFlow, iq.positiveMoneyFlow, iq.negativeMoneyFlow, 
+            iq.fourteenPeriodMFRatio, iq.fourteenPeriodMFIndex
         FROM 
             intraday_quotes iq 
         JOIN

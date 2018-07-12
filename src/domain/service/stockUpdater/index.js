@@ -124,7 +124,9 @@ function updateIndicators(priceHistory){
             upOrDown : moneyFlowIndicators.upOrDown,
             rawMoneyFlow : moneyFlowIndicators.rawMoneyFlow,
             positiveMoneyFlow : moneyFlowIndicators.positiveMoneyFlow,
-            negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow
+            negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow,
+            fourteenPeriodMFRatio : fourteenPeriodMFRatios.MoneyFlowRatio, 
+            fourteenPeriodMFIndex : fourteenPeriodMFRatios.MoneyFlowIndex
         },
         {   
             where : { id : priceHistory[0].id }

@@ -12,7 +12,7 @@ const dev = {
     apiKey : 'D11MRXG1OJVDIBYU',
     requestInterval : 3000,
     stockSource : 'data/equities.top-picks.txt',
-    validateMarketHours : false
+    validateMarketHours : true
  },
  db: {
     storage: '/opt/sqlite/stock_quotes.db'
