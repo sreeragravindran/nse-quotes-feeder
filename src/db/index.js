@@ -23,7 +23,9 @@ const models = {
         upOrDown : { type: Sequelize.INTEGER, allowNull: true }, 
         rawMoneyFlow : { type: Sequelize.DECIMAL(16,2), allowNull: true },
         positiveMoneyFlow : { type: Sequelize.DECIMAL(16,2), allowNull: true },
-        negativeMoneyFlow: { type: Sequelize.DECIMAL(16,2), allowNull: true }
+        negativeMoneyFlow: { type: Sequelize.DECIMAL(16,2), allowNull: true }, 
+        fourteenPeriodMFRatio : {type: Sequelize.DECIMAL(16,2), allowNull : true}, 
+        fourteenPeriodMFIndex : {type: Sequelize.DECIMAL(16,2), allowNull: true}
     }), 
     LatestQuote : sequelize.define('latest_quote', {
         symbol : {type : Sequelize.STRING, allowNull: false, primaryKey : true },
@@ -40,7 +42,7 @@ models.IntradayQuotes.prototype.getAveragePrice = function(){
     return ( this.high + this.low + this.close) / 3;
 }
 
-models.IntradayQuotes.prototype.isEqual(other) = function(){
+models.IntradayQuotes.prototype.isEqual = function(other){
     if(this.open == other.open && 
         this.close == other.close && 
         this.high == other.high &&
