@@ -15,10 +15,10 @@ IchimokuCalculator.prototype.getIndicators = function(){
     //console.log(MODULE_ID, "getIndicators");
     var indicators = new IchimokuIndicators();
     if(this.priceHistory && this.priceHistory.length >= 9){
-        indicators.conversionLine = this.getConversionLine();
-        indicators.baseLine = this.getBaseLine();
-        indicators.leadingSpanA = this.getLeadingSpanA();
-        indicators.leadingSpanB = this.getLeadingSpanB();
+        indicators.conversionLine = Math.toDecimal(his.getConversionLine(), 2);
+        indicators.baseLine = Math.toDecimal(this.getBaseLine(), 2);
+        indicators.leadingSpanA = Math.toDecimal(this.getLeadingSpanA(), 2);
+        indicators.leadingSpanB = Math.toDecimal(this.getLeadingSpanB(), 2);
     }
     return indicators;
     //console.log(MODULE_ID, indicators);
@@ -58,6 +58,5 @@ function getMidPoint(priceHistory){
     var periodLow = priceHistory.min('low');                        
     return(periodHigh + periodLow) / 2.0 ;
 }
-
 
 module.exports = IchimokuCalculator;

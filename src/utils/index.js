@@ -25,6 +25,13 @@ Array.prototype.sum = function(key){
     return this.reduce((sum, e) => sum + e[key], 0)
 }
 
+Math.toDecimal = function(value, decimalPlaces){ 
+    if(value != null && parseFloat(value)){
+        return parseFloat(value).toFixed(decimalPlaces);
+    }
+    return value;
+}
+
 
 //  var array = [ { 'id' : 1 }, { 'id' : 2 }, { 'id' : 3.2}]; 
 
