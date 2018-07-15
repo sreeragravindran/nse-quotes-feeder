@@ -16,11 +16,11 @@
 
 </head>
 <body ng-app="ngIndex">
-  <div ng-controller="homeController" class="container">
+  <div ng-controller="homeController" class="">
 
     <h3>Ichimoku Cloud Indicators </h3>
     <div class="table-responsive">
-        <table class="table">
+        <table class="table" >
         <tr>
             <th>Symbol</th>
             <th>Open</th>
@@ -40,14 +40,18 @@
             <td><input type="text" ng-model="stock.low" disabled="disabled" style="border:none"/></td>
             <td><input type="text" ng-model="stock.close" disabled="disabled" style="border:none"/></td>
             <td ng-class="{'green':stock.conversionLine == 'ABOVE BLUE', 'red':stock.conversionLine == 'BELOW BLUE'}">
-              <input type="text" ng-model="stock.conversionLine" disabled="enabled" style="border:none"/></td>
+              <input type="text" ng-model="stock.conversionLine" disabled="enabled" style="border:none"/>
+            </td>
             <!-- <td ng-class="{'green':stock.baseLine == 'ABOVE RED', 'red':stock.baseLine == 'BELOW RED'}">
               <input type="text" ng-model="stock.baseLine" disabled="disabled" style="border:none"/>
             </td> -->
             <td ng-class="{'green':stock.cloud == 'ABOVE CLOUD', 'red':stock.cloud == 'BELOW CLOUD'}">
-              <input type="text" ng-model="stock.cloud" disabled="disabled" style="border:none"/></td>
+              <input type="text" ng-model="stock.cloud" disabled="disabled" style="border:none"/>
+            </td>
             <!-- <td><input type="text" ng-model="stock.fourteenPeriodMFRatio" disabled="disabled" style="border:none"/></td> -->
-            <td><input type="text" ng-model="stock.fourteenPeriodMFIndex" disabled="disabled" style="border:none"/></td>
+            <td>
+              <input type="text" ng-model="stock.fourteenPeriodMFIndex" disabled="disabled" style="border:none"/>
+            </td>
         </tr>    
         </table>
     </div>    
