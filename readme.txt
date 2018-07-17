@@ -12,6 +12,12 @@ MGL
 OIL 
 IOC  
 
+Alpha vantage doesnt return nse quotes for the following: 
+
+ACC 
+IDEA 
+L&TFH 
+SAIL 
 
 - alphavanate limits only one request / second from a specific api key 
 - hence firing parellel requests results in error for a lot of them, although the behaviour is not consistent 
