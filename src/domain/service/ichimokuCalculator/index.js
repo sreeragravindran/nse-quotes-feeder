@@ -15,7 +15,7 @@ IchimokuCalculator.prototype.getIndicators = function(){
     //console.log(MODULE_ID, "getIndicators");
     var indicators = new IchimokuIndicators();
     if(this.priceHistory && this.priceHistory.length >= 9){
-        indicators.conversionLine = Math.toDecimal(his.getConversionLine(), 2);
+        indicators.conversionLine = Math.toDecimal(this.getConversionLine(), 2);
         indicators.baseLine = Math.toDecimal(this.getBaseLine(), 2);
         indicators.leadingSpanA = Math.toDecimal(this.getLeadingSpanA(), 2);
         indicators.leadingSpanB = Math.toDecimal(this.getLeadingSpanB(), 2);

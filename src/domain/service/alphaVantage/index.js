@@ -31,6 +31,7 @@ class AlphaVantage {
             this.data.intraday(stock.symbol, 'compact', 'json', '5min')
                 .then(data => {
                     var timeSeries = data['Time Series (5min)'];
+                    stock.priceVolumeSeries = [];
                     for (var key in timeSeries) {
                         if (timeSeries.hasOwnProperty(key)) {
                             stock.priceVolumeSeries.push(new models.PriceVolumeData(
