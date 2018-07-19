@@ -22,8 +22,13 @@
               console.log(JSON.parse(message.data));
               var stock = JSON.parse(message.data);
               var index = indexMap.get(stock.symbol);
-              console.log(index);
-              $scope.stocks[index] = stock;
+              if(index){
+                $scope.stocks[index] = stock;
+              }
+              else{
+                  $scope.stocks.push(stock);
+                  indexMap.set(stock.symbol, $scope.stocks.length - 1);
+              }
               $scope.$apply();
             }
 

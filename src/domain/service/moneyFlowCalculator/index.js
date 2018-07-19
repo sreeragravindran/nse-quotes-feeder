@@ -24,7 +24,7 @@ MoneyFlowCalculator.prototype.getIndicators = function(){
 
     var indicators = new MoneyFlowIndicators();
     var currentCandle = this.priceHistory[0]; 
-    indicators.averagePrice = (currentCandle.high + currentCandle.low + currentCandle.close) / 3; 
+    indicators.averagePrice =  Math.toDecimal((currentCandle.high + currentCandle.low + currentCandle.close) / 3, 2); 
 
     if(this.priceHistory.length >= 2){
         // calculate rest of the metrics 
@@ -47,8 +47,8 @@ MoneyFlowCalculator.prototype.getRatiosForPeriod = function(period){
     if(periodDataIsValid(periodData, period) ) {
         var periodPositiveMoneyFlow = periodData.sum('positiveMoneyFlow');
         var periodNegativeMoneyFlow = periodData.sum('negativeMoneyFlow');
-        moneyFlowRatios.MoneyFlowRatio = periodPositiveMoneyFlow / periodNegativeMoneyFlow; 
-        moneyFlowRatios.MoneyFlowIndex = 100 - (100/(1+moneyFlowRatios.MoneyFlowRatio));
+        moneyFlowRatios.MoneyFlowRatio = Math.toDecimal(periodPositiveMoneyFlow / periodNegativeMoneyFlow, 2); 
+        moneyFlowRatios.MoneyFlowIndex = Math.toDecimal(100 - (100/(1+moneyFlowRatios.MoneyFlowRatio)), 2);
     }
     return moneyFlowRatios;  
 }

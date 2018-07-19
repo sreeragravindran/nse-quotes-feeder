@@ -10,10 +10,8 @@ function registerRoutes(server){
         db.models.IntradayQuotes.getIchimokuIndicators()
         .then(stocksWithIndicators => {
             stocksWithIndicators.forEach(element => {
-                //console.log(element);
                 var vm = new ViewModels.IchimokuCloudViewModel().mapFrom(element);
                 viewModels.push(vm);
-                //console.log(vm)
             });
             res.send(viewModels);            
         })
