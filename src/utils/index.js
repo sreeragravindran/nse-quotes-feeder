@@ -15,6 +15,12 @@ Date.prototype.isAheadOf = function(anotherDate){
     return this.getTime() > anotherDate.getTime();
 }
 
+Date.prototype.addHours = function(h) {   
+    var newDate = new Date(this); 
+    newDate.setTime(this.getTime() + (h*60*60*1000)); 
+    return newDate;   
+ }
+
 // Object Array Extensions 
 
 Array.prototype.max = function(key){
@@ -36,6 +42,27 @@ Math.toDecimal = function(value, decimalPlaces){
     return value;
 }
 
+// String extensions 
+
+String.prototype.format = function() {
+    var args = [].slice.call(arguments, 0); 
+    var i = 0;
+
+    return this.toString().replace(/%s/g, function() {
+        return args[i++];
+    });
+}
+
+
+// Console extensions 
+
+console.prototype.logError = function(moduleId, error){
+    console.error("ERROR ", moduleId, (new Date()).toISOString(), error);
+}
+
+console.prototype.logInfo = function(moduleId, info){
+    console.log("INFO ", moduleId, (new Date()).toISOString(), info);
+}
 
 //  var array = [ { 'id' : 1 }, { 'id' : 2 }, { 'id' : 3.2}]; 
 

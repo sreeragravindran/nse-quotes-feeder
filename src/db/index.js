@@ -1,4 +1,5 @@
 const config = require('../../config');
+const utils = require("../utils");
 const Sequelize = require('sequelize'); 
 const sequelize = new Sequelize('stockQuotes', '', '', {
     dialect : 'sqlite',
@@ -75,7 +76,33 @@ models.IntradayQuotes.getIchimokuIndicators = function(){
     })
 }
 
+models.IntradayQuotes.getQuotesForRange = function(symbol, fromDate, toDate){
+    var fromDateString = fromDate.toISOString().replace('T', ' ');
+    var toDateString = toDate.toISOString().replace('T', ' ');
+
+    return sequelize.query(
+        `
+        SELECT 
+            open, high, low, close, volume 
+        FROM 
+            intraday_quotes 
+        WHERE 
+            symbol = '%s'
+        AND 
+            createdAt BETWEEN '%s' AND '%s';       
+        `.format(symbol, fromDateString, toDateString) 
+    ).then(result => {
+        //console.log(result[0].length);
+        return result[0];
+    })
+}
+
 module.exports = {
     dbInstance : sequelize, 
     models : models
 }
+
+// var startDate = new Date(2018, 6, 20, 9, 15, 0);
+// var endDate = new Date(2018, 6, 20, 12, 15, 0);
+
+// models.IntradayQuotes.getQuotesForRange('ADANIENT', startDate, endDate);

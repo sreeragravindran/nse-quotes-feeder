@@ -7,16 +7,13 @@ function PriceVolumeData(timestamp, open, high, low, close, volume){
     this.volume = volume;
 }
 
+PriceVolumeData.prototype.getAveragePrice = function(){
+    return (this.high + this.low + this.close) / 3; 
+}
+
 function Stock(symbol){
     this.symbol = symbol; 
     this.priceVolumeSeries = []; 
-}
-
-function FirstHourBreakOut(high = null, low = null, highBreakOutTime = null, lowBreakOutTime = null){
-    this.high = high;
-    this.low = low;
-    this.highBreakOutTime = highBreakOutTime;
-    this.lowBreakOutTime = lowBreakOutTime;
 }
 
 Stock.prototype.getLatestPrice = function(){
@@ -26,8 +23,32 @@ Stock.prototype.getLatestPrice = function(){
     return null;
 }
 
-PriceVolumeData.prototype.getAveragePrice = function(){
-    return (this.high + this.low + this.close) / 3; 
+function FirstHourBreakOut(high = null, low = null, highBreakOutTime = null, lowBreakOutTime = null){
+    this.high = high;
+    this.low = low;
+    this.highBreakOutTime = highBreakOutTime;
+    this.lowBreakOutTime = lowBreakOutTime;
+}
+
+FirstHourBreakOut.prototype.isHighAndLowPresent = function(){
+    if(this.high && this.low){
+        return true;
+    }
+    return false;
+}
+
+FirstHourBreakOut.prototype.isHighBreakOutPresent = function(){
+    if(this.highBreakOutTime){
+        return true;
+    }
+    return false;
+}
+
+FirstHourBreakOut.prototype.isLowBreakOutPresent = function(){
+    if(this.lowBreakOutTime){
+        return true;
+    }
+    return false;
 }
 
 module.exports.Stock = Stock;
