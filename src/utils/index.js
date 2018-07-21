@@ -11,6 +11,10 @@ Date.prototype.isBetween = function(startDate, endDate){
     return false;
 }
 
+Date.prototype.isAheadOf = function(anotherDate){
+    return this.getTime() > anotherDate.getTime();
+}
+
 // Object Array Extensions 
 
 Array.prototype.max = function(key){

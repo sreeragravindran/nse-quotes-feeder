@@ -14,6 +14,9 @@ const dev = {
     stockSource : 'data/equities.top-picks.txt',
     validateMarketHours : true
  },
+ stockExchange: {
+    stockSource : 'data/equities.top-picks.txt'
+ },
  db: {
     storage: '/opt/sqlite/stock_quotes.db'
  }
