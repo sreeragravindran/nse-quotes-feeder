@@ -53,5 +53,6 @@ FirstHourBreakOut.prototype.isLowBreakOutPresent = function(){
 
 module.exports.Stock = Stock;
 module.exports.PriceVolumeData = PriceVolumeData;
+module.exports.FirstHourBreakOut = FirstHourBreakOut;
 
 //console.log(new FirstHourBreakOut());

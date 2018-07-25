@@ -56,13 +56,13 @@ String.prototype.format = function() {
 
 // Console extensions 
 
-console.prototype.logError = function(moduleId, error){
-    console.error("ERROR ", moduleId, (new Date()).toISOString(), error);
-}
+// console.prototype.logError = function(moduleId, error){
+//     console.error("ERROR ", moduleId, (new Date()).toISOString(), error);
+// }
 
-console.prototype.logInfo = function(moduleId, info){
-    console.log("INFO ", moduleId, (new Date()).toISOString(), info);
-}
+// console.prototype.logInfo = function(moduleId, info){
+//     console.log("INFO ", moduleId, (new Date()).toISOString(), info);
+// }
 
 //  var array = [ { 'id' : 1 }, { 'id' : 2 }, { 'id' : 3.2}]; 
 
@@ -75,10 +75,13 @@ console.prototype.logInfo = function(moduleId, info){
 
 // var acc = new models.Stock('ACC'); 
 // acc.priceVolumeSeries = [ 
-//     new models.PriceVolumeData(new Date(), null, 1, 1, 1, 1 ), 
-//     new models.PriceVolumeData(new Date(), 2, 2, 2, 2, 2 ),
-//     new models.PriceVolumeData(new Date(), 3, 3, 3, 3, 3 ),  
+//     // new models.PriceVolumeData(new Date(), null, 1, 1, 1, 1 ), 
+//     // new models.PriceVolumeData(new Date(), 2, 2, 2, 2, 2 ),
+//     // new models.PriceVolumeData(new Date(), 3, 3, 3, 3, 3 ),  
 // ]; 
+
+
+// console.log(acc.priceVolumeSeries.max('high'));
 
 // var result = acc.priceVolumeSeries.filter(e => e.open > 0);
 

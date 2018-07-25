@@ -61,3 +61,5 @@ module.exports = new stockExchange();
 // console.log(s.getMarketOpenTime());
 // console.log(s.getMarketOpenTime().addHours(1));
 // console.log(s.getMarketOpenTime());
+
+//console.log((new stockExchange()).getAllStocks());
