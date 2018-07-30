@@ -1,7 +1,7 @@
 function doSomething(){
     return new Promise(function(resolve, reject){
         setTimeout(() => {
-            resolve("data-from-doSomething");
+            resolve("data1-from-doSomething");
         }, 2000)
     })
 }
@@ -13,9 +13,9 @@ function getSomething() {
                 .then(result => {
                     console.log(result);
                     if(result == "data-from-doSomething"){
-                        return resolve("data-from-getSomething");
+                        resolve("data-from-getSomething");
                     } else {
-                        return result;
+                        reject("error")
                     }
                 })
                 .then(result => {
@@ -26,6 +26,8 @@ function getSomething() {
     }).then(data => {
         console.log(data, "from outer most then in getSomething")
         return data;
+    }).catch(error => {
+        return error;
     })
 }
 

@@ -1,4 +1,9 @@
-FROM dynaum/node-sqlite
+FROM node:7 
+
+# install sqlite3 
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y sqlite3 libsqlite3-dev
 
 # Create app directory 
 WORKDIR /usr/src/app
@@ -15,13 +20,6 @@ RUN npm install --only=production
 # Bundle app source 
 COPY . .
 
-EXPOSE 3000 401510 
-
-# SET enviroment variables from ARGS 
-ARG NODE_ENV=dev 
-ARG APIKEY=
-
-ENV NODE_ENV=$NODE_ENV
-ENV APIKEY=$APIKEY
+# EXPOSE 3000 401510 
 
 CMD node src/server.js

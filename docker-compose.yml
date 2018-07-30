@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  stock-quotes-service:
+    build: .
+    volumes:
+      - ./:usr/src/app
+      - /opt/sqlite/stock_quotes.db:usr/src/app/stock_quotes.db
+    ports:
+      - 3000:3000
+      - 3001:401510
+    environment:
+      - NODE_ENV=prod
+      - APIKEY=D11MRXG1OJVDIBYU

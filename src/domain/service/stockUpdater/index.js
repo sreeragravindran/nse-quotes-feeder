@@ -5,6 +5,7 @@ const db = require('../../../db');
 const utils = require('../../../utils');
 const IchimokuCalculator = require('../ichimokuCalculator');
 const MoneyFlowCalculator = require('../moneyFlowCalculator');
+const firstHourBreakOutRecorder = require('../firstHourBreakOutRecorder');
 const BreakSignal = "BreakSignal";
 
 function updateStockQuotes(onUpdateCallback){
@@ -24,10 +25,10 @@ function updateStockQuotes(onUpdateCallback){
             })
             .then(result => {
                 if(result == null){
-                    console.log("insert quote");
+                    //console.log("insert quote");
                     return insertQuote(stock); 
                 } else if ( now.getDiffInMinutesFrom(result.updatedAt) >= 5 ){
-                    console.log("update quote");
+                    //console.log("update quote");
                     return updateQuote(stock);
                 }
                 // exit chain here 
@@ -37,14 +38,16 @@ function updateStockQuotes(onUpdateCallback){
                  // update ichimoku indicators                     
                  return db.models.IntradayQuotes.findAll({
                      where : { symbol : stock.symbol }, 
-                     attributes : ['id','symbol','high','low','open','close','volume', 'averagePrice', 'rawMoneyFlow', 'upOrDown', 'positiveMoneyFlow', 'negativeMoneyFlow'], 
+                     attributes : ['id','symbol','high','low','open','close','volume', 
+                                'averagePrice', 'rawMoneyFlow', 'upOrDown', 'positiveMoneyFlow', 'negativeMoneyFlow'], 
                      order : [
                          ['createdAt', 'DESC'], 
                      ], 
                      limit : 52
-                 }).then(priceHistory => {
+                 })
+                 .then(priceHistory => {
                    // console.log("update Ichimoku indicators")
-                    return updateIndicators(priceHistory);
+                    return updateAndReturnIndicators(priceHistory);
                 })        
             })
             .then((result) => {
@@ -60,7 +63,6 @@ function updateStockQuotes(onUpdateCallback){
         }        
     })    
 }
-
 
 function insertQuote(stock){
     var latestPrice = stock.getLatestPrice();
@@ -100,7 +102,7 @@ function insertIntradayQuote(stock){
     })
 }
 
-function updateIndicators(priceHistory){
+function updateAndReturnIndicators(priceHistory){
 
     var ichimokuIndicators = new IchimokuCalculator(priceHistory).getIndicators(); 
     var moneyFlowCalaculator = new MoneyFlowCalculator(priceHistory);
@@ -129,11 +131,15 @@ function updateIndicators(priceHistory){
             fourteenPeriodMFIndex : fourteenPeriodMFRatios.MoneyFlowIndex
         },
         {   
-            where : { id : priceHistory[0].id }
+            where : { id : currentCandle.id }
         }
     )
     .then(() => {
-        var currentCandle = priceHistory[0];
+        // get first hour break out times 
+        return firstHourBreakOutRecorder.getFirstHourBreakOut(currentCandle)
+    })
+    .then((firstHourBreakOut) => {       
+      
         return {
             symbol : currentCandle.symbol,
             open : currentCandle.open,
@@ -141,17 +147,22 @@ function updateIndicators(priceHistory){
             low : currentCandle.low,
             close : currentCandle.close, 
             volume : currentCandle.volume,
+            // ichimoku indicators 
             conversionLine : ichimokuIndicators.conversionLine,
             baseLine : ichimokuIndicators.baseLine,
             leadingSpanA : ichimokuIndicators.leadingSpanA,
             leadingSpanB : ichimokuIndicators.leadingSpanB,
+            // money flow indicators 
             averagePrice : moneyFlowIndicators.averagePrice,
             upOrDown : moneyFlowIndicators.upOrDown,
             rawMoneyFlow : moneyFlowIndicators.rawMoneyFlow,
             positiveMoneyFlow : moneyFlowIndicators.positiveMoneyFlow,
             negativeMoneyFlow : moneyFlowIndicators.negativeMoneyFlow,
             fourteenPeriodMFRatio : fourteenPeriodMFRatios.MoneyFlowRatio,
-            fourteenPeriodMFIndex : fourteenPeriodMFRatios.MoneyFlowIndex 
+            fourteenPeriodMFIndex : fourteenPeriodMFRatios.MoneyFlowIndex, 
+            // first hour break out 
+            firstHourBreakOut : firstHourBreakOut            
+            // previous day break out
         }
     })
 }

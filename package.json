@@ -11,17 +11,18 @@
   "license": "ISC",
   "dependencies": {
     "alphavantage": "^1.1.1",
-    "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.3",
-    "google-finance": "^0.1.11",
-    "moment-timezone": "^0.5.16",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2",
-    "restify": "^7.1.1",
     "sequelize": "^4.37.8",
     "sqlite3": "^4.0.0",
-    "stock-watch": "^0.2.0",
-    "time": "^0.12.0",
     "ws": "^5.1.1"
+  },
+  "devDependencies": {
+    "google-finance": "^0.1.11",
+    "moment-timezone": "^0.5.16",
+    "cheerio": "^1.0.0-rc.2",
+    "stock-watch": "^0.2.0",
+    "time": "^0.12.0",        
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
   }
 }
