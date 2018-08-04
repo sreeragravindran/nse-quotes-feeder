@@ -1,4 +1,4 @@
-const MODULE_ID = "SRC/DOMAIN/SERVICE/FIRSTHOURBREAKOUTCALCULATOR"; 
+const MODULE_ID = "SRC/DOMAIN/SERVICE/FIRSTHOURBREAKOUTRECORDER"; 
 const stockExchange = require("../stockExchange");
 const models = require("../../models");
 const db = require("../../../db");
@@ -18,7 +18,7 @@ function firstHourBreakOutRecorder(){
     })();
 
     var getFirstHourHighAndLow = function(stockSymbol){
-        return db.IntradayQuotes.getQuotesForRange(
+        return db.models.IntradayQuotes.getQuotesForRange(
             stockSymbol, 
             stockExchange.getMarketOpenTime(), 
             stockExchange.getMarketOpenTime().addHours(1)

@@ -33,7 +33,7 @@ function stockExchange(){
 
     this.isInFirstHour = function(){
         var now = new Date();
-        var marketOpenTime = this.marketOpenTime();
+        var marketOpenTime = this.getMarketOpenTime();
         return now.isBetween(marketOpenTime, marketOpenTime.addHours(1));
     }
 
@@ -56,7 +56,9 @@ function getAllStocks() {
 
 module.exports = new stockExchange();
 
-// var s = new stockExchange();
+//var s = new stockExchange();
+
+//console.log(s.isPastFirstHour(), s.getMarketOpenTime(), s.getMarketCloseTime(), s.isOpen());
 
 // console.log(s.getMarketOpenTime());
 // console.log(s.getMarketOpenTime().addHours(1));
